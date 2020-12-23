@@ -6,8 +6,10 @@ import { v4 as uuid_v4 } from "uuid";
 
 const CMD = ({
   open,
+  minimized,
   closeCMD,
   minimizeCMD,
+  clearCMD,
   cmdArr,
   sendCommand,
   cmdSavedCommands,
@@ -17,10 +19,26 @@ const CMD = ({
   const [command, setCommand] = useState("");
   const [enterPressed, setEnterPressed] = useState(false);
   const inputEl = useRef(null);
+
   useEffect(() => {
     inputEl.current.focus();
     setEnterPressed(false);
-  }, [open, enterPressed, command]);
+  }, [enterPressed]);
+  useEffect(() => {
+    console.log("here in useEffect");
+    if (open) {
+      if (inputEl.current) {
+        console.log(inputEl.current);
+        setTimeout(() => {
+          inputEl.current.focus();
+        }, 400); //because the transition of 0.4s in the animation
+      }
+
+      setEnterPressed(false);
+    } else {
+      clearCMD();
+    }
+  }, [open, minimized]); //command
 
   const handleChange = (e) => {
     setCommand(e.target.value);
@@ -55,7 +73,7 @@ const CMD = ({
   };
 
   return (
-    <Container open={open}>
+    <Container open={open && !minimized}>
       <Navigate>
         <NavigateBtns>
           <NavigateBtn onClick={minimizeCMD}>
@@ -75,13 +93,15 @@ const CMD = ({
           Microsoft Windows <br /> (c) 2020 Microsoft Corporation. All rights
           reserved.
         </Heading>
-        {cmdArr.map((item) => {
+        {cmdArr.map((item, i) => {
           if (!item.error) {
             return (
               <Command key={item.id} onKeyDown={handleSendCommand}>
                 <Location>{item.location}></Location>
                 <CommandInput
                   ref={inputEl}
+                  // ref={refs.current[i]}
+                  // onFocus={(e) => e.currentTarget.select()}
                   value={item.input || command}
                   onChange={handleChange}
                   // onKeyDown={(e) => getLastCommand(e, item.id)}
@@ -121,6 +141,7 @@ const Container = styled.div`
         `};
   opacity: ${({ open }) => (open ? "1" : "0")};
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
+  /* display: ${({ open }) => (open ? "flex" : "none")}; */
   transition: all 0.4s;
 `;
 

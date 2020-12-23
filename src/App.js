@@ -15,7 +15,13 @@ import backgroundImg from "./images/background.jpg";
 function App() {
   const [taskBarArr, setTaskBarArr] = useState([]);
   const [applicationsArr, setApplicationArr] = useState([
-    { id: uuid_v4(), type: "cmd", name: "שורת הפקודה", open: false },
+    {
+      id: uuid_v4(),
+      type: "cmd",
+      name: "שורת הפקודה",
+      open: false,
+      minimized: false,
+    },
   ]);
   const [cmdArr, setCmdArr] = useState([
     {
@@ -46,7 +52,15 @@ function App() {
   const openCMD = () => {
     const [copyApplicationArr, cmdObj] = findCmdObj();
     cmdObj.open = true;
+    cmdObj.minimized = false;
     setApplicationArr(copyApplicationArr);
+    // const copyCmdArr = [...cmdArr];
+    // copyCmdArr.push({
+    //   id: uuid_v4(),
+    //   location: "\\Desktop",
+    //   input: "",
+    // });
+    // setCmdArr(copyCmdArr);
   };
 
   const closeCMD = () => {
@@ -59,13 +73,26 @@ function App() {
 
   const minimizeCMD = () => {
     const [copyApplicationArr, cmdObj] = findCmdObj();
-    cmdObj.open = false;
+    cmdObj.minimized = true;
     setApplicationArr(copyApplicationArr);
     const checkIfAlreadyOpen = taskBarArr.find((task) => task.type === "cmd");
     if (!checkIfAlreadyOpen)
       setTaskBarArr([...taskBarArr, { type: "cmd", name: "cmd" }]);
   };
 
+  const clearCMD = () => {
+    setCmdArr([
+      {
+        id: uuid_v4(),
+        location: "\\Desktop",
+        input: "",
+      },
+    ]);
+    setCmdSavedCommands({
+      commands: [],
+      count: 0,
+    });
+  };
   const openOptionsBar = (e) => {
     if (e.target instanceof HTMLDivElement) {
       console.log(e);
@@ -89,6 +116,11 @@ function App() {
   const checkIfCMDClicked = () => {
     const cmdObj = applicationsArr.find((app) => app.type === "cmd");
     return cmdObj.open;
+  };
+
+  const checkIfCMDMinimized = () => {
+    const cmdObj = applicationsArr.find((app) => app.type === "cmd");
+    return cmdObj.minimized;
   };
 
   const createFolder = (name) => {
@@ -283,9 +315,12 @@ function App() {
         changeApplicationName={changeApplicationName}
       />
       <CMD
+        // open={checkIfCMDClicked()}
         open={checkIfCMDClicked()}
+        minimized={checkIfCMDMinimized()}
         closeCMD={closeCMD}
         minimizeCMD={minimizeCMD}
+        clearCMD={clearCMD}
         cmdArr={cmdArr}
         sendCommand={sendCommand}
         cmdSavedCommands={cmdSavedCommands}
