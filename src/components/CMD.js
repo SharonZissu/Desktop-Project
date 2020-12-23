@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ClearIcon from "@material-ui/icons/Clear";
 import RemoveIcon from "@material-ui/icons/Remove";
 import { v4 as uuid_v4 } from "uuid";
@@ -28,6 +28,7 @@ const CMD = ({
 
   const handleSendCommand = (e) => {
     if (e.key === "Enter") {
+      if (command.trim() === "") return;
       setEnterPressed(true);
       sendCommand(command);
       setCommand("");
@@ -53,12 +54,6 @@ const CMD = ({
     }
   };
 
-  // const getLastCommand = (e, id) => {
-  //   if (e.key === "ArrowUp" && cmdSavedCommands.commands.length > 0) {
-  //     setCommand(cmdSavedCommands.commands[cmdSavedCommands.count]);
-  //     if (cmdSavedCommands.count > 0) setCountMinus1();
-  //   }
-  // };
   return (
     <Container open={open}>
       <Navigate>
@@ -116,9 +111,17 @@ const Container = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  ${({ open }) =>
+    open
+      ? css`
+          transform: translate(-50%, -50%) scale(1);
+        `
+      : css`
+          transform: translate(-50%, -50%) scale(0.5);
+        `};
   opacity: ${({ open }) => (open ? "1" : "0")};
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
+  transition: all 0.4s;
 `;
 
 const Navigate = styled.div`
