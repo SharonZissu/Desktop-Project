@@ -1,23 +1,28 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import ClearIcon from "@material-ui/icons/Clear";
+import RemoveIcon from "@material-ui/icons/Remove";
+import CropSquareSharpIcon from "@material-ui/icons/CropSquareSharp";
 
-const NavigateBar = ({ minimized, sizing, close, type, name }) => {
+const NavigateBar = ({ id, minimizeApp, sizingApp, closeApp, type, name }) => {
   return (
-    <Navigate increseCmd={increseCmd}>
+    <Navigate>
       <NavigateBtns>
-        <GreyHoverBtn onClick={minimized}>
+        <GreyHoverBtn onClick={() => minimizeApp(id)}>
           <RemoveIcon fontSize="large" />
         </GreyHoverBtn>
-        <GreyHoverBtn onClick={sizing}>
+        <GreyHoverBtn onClick={() => sizingApp(id)}>
           <CropSquareSharpIcon fontSize="large" />
         </GreyHoverBtn>
 
-        <CloseBtn onClick={close}>
+        <CloseBtn onClick={() => closeApp(id)}>
           <ClearIcon fontSize="large" />
         </CloseBtn>
       </NavigateBtns>
       <NameAndIcon>
-        <Icon src={require(`../images/${type}.png`).default} />
+        <IconContainer>
+          <Icon src={require(`../images/${type}.png`).default} />
+        </IconContainer>
         <Name>{name}</Name>
       </NameAndIcon>
     </Navigate>
@@ -27,7 +32,8 @@ const NavigateBar = ({ minimized, sizing, close, type, name }) => {
 export default NavigateBar;
 
 const Navigate = styled.div`
-  flex: 0 0 7%;
+  height: 3.3rem;
+  /* flex: 0 0 7%; */
   /* width: ${({ increseCmd }) => (increseCmd ? "100%" : "65rem")}; */
   width: 100%;
   /* transition: all 0.4s; */
@@ -80,11 +86,23 @@ const NameAndIcon = styled.div`
 `;
 const Name = styled.label`
   font-size: 1.2rem;
-  height: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+`;
+
+const IconContainer = styled.div`
+  height: 100%;
+  width: 1.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 0.4rem;
 `;
 const Icon = styled.img`
   /* height: 0.8rem; */
-  width: 1.6rem;
-  margin-right: 0.4rem;
+  width: 100%;
   height: 50%;
 `;

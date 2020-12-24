@@ -7,7 +7,7 @@ import Applications from "./components/Applications";
 import CMD from "./components/CMD";
 import OptionsBar from "./components/OptionsBar";
 import StartScreen from "./components/StartScreen";
-
+import TextFile from "./components/TextFile";
 //styles
 import styled, { css, keyframes } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
@@ -20,6 +20,15 @@ function App() {
       id: uuid_v4(),
       type: "cmd",
       name: "שורת הפקודה",
+      open: false,
+      minimized: false,
+      sizing: false,
+    },
+    {
+      id: uuid_v4(),
+      type: "text",
+      instructions: true,
+      name: "הוראות",
       open: false,
       minimized: false,
       sizing: false,
@@ -70,8 +79,8 @@ function App() {
     setTaskBarArr(filteredTaskArr);
   };
 
-  const openApp = () => {
-    const [copyApplicationArr, appObj] = findCmdObj();
+  const openApp = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
     appObj.open = true;
     appObj.minimized = false;
     setApplicationArr(copyApplicationArr);
@@ -146,9 +155,38 @@ function App() {
     const cmdObj = applicationsArr.find((app) => app.type === "cmd");
     return cmdObj.sizing;
   };
+
   const checkCMDId = () => {
     const cmdObj = applicationsArr.find((app) => app.type === "cmd");
     return cmdObj.id;
+  };
+
+  const checkIfInstructionClicked = () => {
+    const instructionObj = applicationsArr.find(
+      (app) => app.instructions === true
+    );
+    return instructionObj.open;
+  };
+
+  const checkIfInstructionMinimized = () => {
+    const instructionObj = applicationsArr.find(
+      (app) => app.instructions === true
+    );
+    return instructionObj.minimized;
+  };
+
+  const checkIfInstructionSizing = () => {
+    const instructionObj = applicationsArr.find(
+      (app) => app.instructions === true
+    );
+    return instructionObj.sizing;
+  };
+
+  const checkInstructionsFileId = () => {
+    const instructionObj = applicationsArr.find(
+      (app) => app.instructions === true
+    );
+    return instructionObj.id;
   };
 
   const createFolder = (name) => {
@@ -344,10 +382,39 @@ function App() {
         name="main"
         startDesktop={startDesktop}
       >
+        {applicationsArr.map((app) => {
+          if (app.open && app.type !== "cmd" && !app.instructions) {
+            if (app.type === "text") {
+              return (
+                <TextFile
+                  id={app.id}
+                  minimizeApp={minimizeApp}
+                  sizingApp={sizingApp}
+                  closeApp={closeApp}
+                  open={app.open}
+                  minimized={app.minimized}
+                  sizing={app.sizing}
+                  appName={app.name}
+                />
+              );
+            }
+          }
+        })}
         <Applications
           applicationsArr={applicationsArr}
           openApplication={openApplication}
           changeApplicationName={changeApplicationName}
+        />
+
+        <TextFile
+          id={checkInstructionsFileId()}
+          minimizeApp={minimizeApp}
+          sizingApp={sizingApp}
+          closeApp={closeApp}
+          open={checkIfInstructionClicked()}
+          minimized={checkIfInstructionMinimized()}
+          sizing={checkIfInstructionSizing()}
+          appName="הוראות הפעלה"
         />
         <CMD
           // open={checkIfCMDClicked()}
@@ -388,6 +455,8 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   background-image: url(${backgroundImg});
   background-size: cover;
+  /* height: 90%; */
+  /* width: 90%; */
   height: calc(100vh - 8rem);
   width: calc(100vw - 8rem);
   /* z-index: 10; */

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
-import ClearIcon from "@material-ui/icons/Clear";
-import RemoveIcon from "@material-ui/icons/Remove";
-import CropSquareSharpIcon from "@material-ui/icons/CropSquareSharp";
+import NavigateBar from "./NavigateBar";
+
 import { v4 as uuid_v4 } from "uuid";
 
 const CMD = ({
@@ -87,24 +86,14 @@ const CMD = ({
 
   return (
     <Container open={open && !minimized} increseCmd={sizing}>
-      <Navigate increseCmd={increseCmd}>
-        <NavigateBtns>
-          <GreyHoverBtn onClick={() => minimizeApp(id)}>
-            <RemoveIcon fontSize="large" />
-          </GreyHoverBtn>
-          <GreyHoverBtn onClick={() => sizingApp(id)}>
-            <CropSquareSharpIcon fontSize="large" />
-          </GreyHoverBtn>
-
-          <CloseBtn onClick={closeCmdHandler}>
-            <ClearIcon fontSize="large" />
-          </CloseBtn>
-        </NavigateBtns>
-        <NameAndIcon>
-          <Icon src={require("../images/cmd.png").default} />
-          <Name>שורת הפקודה</Name>
-        </NameAndIcon>
-      </Navigate>
+      <NavigateBar
+        id={id}
+        minimizeApp={minimizeApp}
+        sizingApp={sizingApp}
+        closeApp={closeApp}
+        type="cmd"
+        name="שורת הפקודה"
+      />
       <CommandsContainer>
         <Heading>
           Microsoft Windows <br /> (c) 2020 Microsoft Corporation. All rights
@@ -161,69 +150,6 @@ const Container = styled.div`
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
   /* display: ${({ open }) => (open ? "flex" : "none")}; */
   transition: all 0.4s;
-`;
-
-const Navigate = styled.div`
-  flex: 0 0 7%;
-  /* width: ${({ increseCmd }) => (increseCmd ? "100%" : "65rem")}; */
-  width: 100%;
-  /* transition: all 0.4s; */
-
-  padding-right: 1.65rem;
-  padding-left: 0.6rem;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: space-between;
-`;
-
-const NavigateBtns = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const NavigateBtn = styled.button`
-  border: none;
-  padding: 0 1.4rem;
-  background-color: transparent;
-  color: rgba(0, 0, 0, 0.6);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const CloseBtn = styled(NavigateBtn)`
-  &:hover {
-    background-color: #e81123;
-  }
-`;
-const GreyHoverBtn = styled(NavigateBtn)`
-  &:hover {
-    background-color: #e5e5e5;
-  }
-`;
-
-const NameAndIcon = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-`;
-const Name = styled.label`
-  font-size: 1.2rem;
-  height: 80%;
-`;
-const Icon = styled.img`
-  /* height: 0.8rem; */
-  width: 1.6rem;
-  margin-right: 0.4rem;
-  height: 50%;
 `;
 
 const CommandsContainer = styled.main`

@@ -19,6 +19,7 @@ const Applications = ({
             name={app.name}
             openApplication={openApplication}
             changeApplicationName={changeApplicationName}
+            instructions={app.instructions}
           />
         );
       })}

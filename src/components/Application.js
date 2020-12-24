@@ -7,6 +7,7 @@ const Application = ({
   name,
   openApplication,
   changeApplicationName,
+  instructions,
 }) => {
   // console.log(name);
   const [newAppName, setNewAppName] = useState(name);
@@ -36,9 +37,10 @@ const Application = ({
         src={require(`../images/${type}.png`).default}
         onDoubleClick={() => openApplication(id)}
       />
-      {type === "cmd" ? (
+      {(type === "cmd" || instructions) && (
         <ApplicationName>{name}</ApplicationName>
-      ) : (
+      )}
+      {type !== "cmd" && !instructions && (
         <ApplicationNameInput
           type="text"
           value={newAppName}

@@ -15,8 +15,11 @@ const OpenedTask = ({ id, type, name, open, minimized, openFunc }) => {
 export default OpenedTask;
 
 const Container = styled.div`
-  height: 100%;
+  /* height: 100%; */
   width: 7rem;
+  height: 100%;
+  /* width: 100%; */
+  margin-right: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;

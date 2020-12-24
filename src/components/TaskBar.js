@@ -27,17 +27,19 @@ const TaskBar = ({ taskBarArr, openApp }) => {
           {day}/{month + 1}/{year}
         </DateContent>
       </TimeContainer>
-      {taskBarArr.map(({ id, type, name, open, minimized }, i) => (
-        <OpenedTask
-          key={id}
-          id={id}
-          type={type}
-          name={name}
-          open={open}
-          minimized={minimized}
-          openFunc={() => openApp(id)}
-        />
-      ))}
+      <OpenedTasks>
+        {taskBarArr.map(({ id, type, name, open, minimized }, i) => (
+          <OpenedTask
+            key={id}
+            id={id}
+            type={type}
+            name={name}
+            open={open}
+            minimized={minimized}
+            openFunc={() => openApp(id)}
+          />
+        ))}
+      </OpenedTasks>
       <StartIcon
         onMouseOver={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -86,6 +88,10 @@ const TimeAndData = styled.label`
 const Time = styled(TimeAndData)``;
 const DateContent = styled(TimeAndData)``;
 
+const OpenedTasks = styled.div`
+  display: flex;
+  height: 100%;
+`;
 const StartIcon = styled.button`
   border: none;
   padding: 0.8rem 1.4rem;
