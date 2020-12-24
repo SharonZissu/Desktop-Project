@@ -9,7 +9,7 @@ import OptionsBar from "./components/OptionsBar";
 import StartScreen from "./components/StartScreen";
 
 //styles
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
 import backgroundImg from "./images/background.jpg";
 
@@ -365,21 +365,24 @@ const Container = styled.div`
   background-size: cover;
   height: calc(100vh - 8rem);
   width: calc(100vw - 8rem);
-  z-index: -1;
-
-  filter: blur(8px);
-  -webkit-filter: blur(8px);
+  /* z-index: 10; */
+  z-index: 10;
+  transition: all 0.7s ease-out;
 
   ${({ startDesktop }) =>
-    startDesktop &&
-    css`
-      z-index: 10;
-
-      opacity: 1;
-      visibility: visible;
-      filter: none;
-      -webkit-filter: none;
-    `}
+    startDesktop
+      ? css`
+          opacity: 1;
+          visibility: visible;
+          filter: none;
+          -webkit-filter: none;
+        `
+      : css`
+          opacity: 0;
+          visibility: hidden;
+          filter: blur(8px);
+          -webkit-filter: blur(8px);
+        `}
 `;
 
 /* position: relative;
