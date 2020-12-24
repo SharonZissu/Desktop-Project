@@ -367,7 +367,7 @@ const Container = styled.div`
   width: calc(100vw - 8rem);
   /* z-index: 10; */
   z-index: 10;
-  transition: all 0.7s ease-out;
+  transition: all 0.4s ease-out;
 
   ${({ startDesktop }) =>
     startDesktop

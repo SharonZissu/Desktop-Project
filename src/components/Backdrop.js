@@ -14,9 +14,8 @@ const Container = styled.div`
   background-color: black;
   opacity: ${({ open }) => (open ? ".6" : "0")};
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
-  transition: all 0.8s;
+  transition: opacity 0.8s ease-in;
   /* z-index: ${({ open }) => (open ? "5" : "-15")}; */
-  visibility: ${({ open }) => (open ? "block" : "none")};
 
   z-index: 5;
 `;
