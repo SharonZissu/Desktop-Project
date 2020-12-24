@@ -82,6 +82,8 @@ const Container = styled.div`
   background-size: cover;
   width: 100%;
   height: calc(100vh - 8rem);
+  box-shadow: 0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.3);
+
   /* opacity: ${({ startDesktop }) => (startDesktop ? "0" : "1")};
   visibility: ${({ startDesktop }) => (startDesktop ? "hidden" : "visible")}; */
   ${({ blurBg }) =>

@@ -18,6 +18,8 @@ const CMD = ({
   cmdSavedCommands,
   setCountMinus1,
   setCountPlus1,
+  lastAppClicked,
+  handleApplicationClickedLast,
 }) => {
   const [command, setCommand] = useState("");
   const [enterPressed, setEnterPressed] = useState(false);
@@ -85,7 +87,12 @@ const CMD = ({
   };
 
   return (
-    <Container open={open && !minimized} increseCmd={sizing}>
+    <Container
+      onClick={() => handleApplicationClickedLast(id)}
+      open={open && !minimized}
+      increseCmd={sizing}
+      lastClicked={lastAppClicked.id === id}
+    >
       <NavigateBar
         id={id}
         minimizeApp={minimizeApp}
@@ -131,7 +138,17 @@ export default CMD;
 
 const Container = styled.div`
   width: ${({ increseCmd }) => (increseCmd ? "100%" : "65rem")};
-  height: ${({ increseCmd }) => (increseCmd ? "100%" : "40rem")};
+  /* height: ${({ increseCmd }) => (increseCmd ? "100%" : "40rem")}; */
+  ${({ increseCmd }) =>
+    increseCmd
+      ? css`
+          height: calc(100% - 5rem);
+          margin-top: -2.45rem;
+        `
+      : css`
+          height: 40rem;
+        `}
+  z-index: ${({ lastClick }) => (lastClick ? "15" : "auto")};
 
   display: flex;
   flex-direction: column;

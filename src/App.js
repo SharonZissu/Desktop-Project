@@ -48,19 +48,12 @@ function App() {
   const [pageX, setPageX] = useState(null);
   const [pageY, setPageY] = useState(null);
   const [startDesktop, setStartDesktop] = useState(false);
+  const [lastAppClicked, setLastAppClicked] = useState("");
 
   const startDesktopFunc = () => setStartDesktop(true);
 
   const openApplication = (id) => {
     openApp(id);
-  };
-
-  const findCmdObj = () => {
-    const copyApplicationArr = [...applicationsArr];
-    return [
-      copyApplicationArr,
-      copyApplicationArr.find((app) => app.type === "cmd"),
-    ];
   };
 
   const findObj = (id) => {
@@ -84,6 +77,13 @@ function App() {
     appObj.open = true;
     appObj.minimized = false;
     setApplicationArr(copyApplicationArr);
+    setLastAppClicked(appObj);
+  };
+
+  const handleApplicationClickedLast = (id) => {
+    //when click on the body of opened application
+    const [, clickedObj] = findObj(id);
+    setLastAppClicked(clickedObj);
   };
 
   const closeApp = (id) => {
@@ -395,6 +395,8 @@ function App() {
                   minimized={app.minimized}
                   sizing={app.sizing}
                   appName={app.name}
+                  lastAppClicked={lastAppClicked}
+                  handleApplicationClickedLast={handleApplicationClickedLast}
                 />
               );
             }
@@ -415,6 +417,8 @@ function App() {
           minimized={checkIfInstructionMinimized()}
           sizing={checkIfInstructionSizing()}
           appName="הוראות הפעלה"
+          lastAppClicked={lastAppClicked}
+          handleApplicationClickedLast={handleApplicationClickedLast}
         />
         <CMD
           // open={checkIfCMDClicked()}
@@ -431,6 +435,8 @@ function App() {
           cmdSavedCommands={cmdSavedCommands}
           setCountMinus1={setCountMinus1}
           setCountPlus1={setCountPlus1}
+          lastAppClicked={lastAppClicked}
+          handleApplicationClickedLast={handleApplicationClickedLast}
         />
         <TaskBar taskBarArr={taskBarArr} openApp={openApp} />
         <OptionsBar
@@ -455,6 +461,7 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   background-image: url(${backgroundImg});
   background-size: cover;
+  box-shadow: 0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);
   /* height: 90%; */
   /* width: 90%; */
   height: calc(100vh - 8rem);
@@ -526,4 +533,12 @@ const Container = styled.div`
 //     console.log(cmdObj);
 //     setTaskBarArr([...taskBarArr, cmdObj]);
 //   }
+// };
+
+// const findCmdObj = () => {
+//   const copyApplicationArr = [...applicationsArr];
+//   return [
+//     copyApplicationArr,
+//     copyApplicationArr.find((app) => app.type === "cmd"),
+//   ];
 // };

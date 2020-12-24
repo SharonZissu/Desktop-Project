@@ -11,9 +11,16 @@ const TextFile = ({
   minimized,
   sizing,
   appName,
+  lastAppClicked,
+  handleApplicationClickedLast,
 }) => {
   return (
-    <Container open={open && !minimized} increseDiv={sizing}>
+    <Container
+      onClick={() => handleApplicationClickedLast(id)}
+      open={open && !minimized}
+      increseDiv={sizing}
+      lastClick={lastAppClicked.id === id}
+    >
       <NavigateBar
         id={id}
         minimizeApp={minimizeApp}
@@ -31,7 +38,19 @@ export default TextFile;
 
 const Container = styled.div`
   width: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")};
-  height: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")};
+  /* height: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")}; */
+  border: ${({ increseDiv }) => (increseDiv ? "none" : "1px solid black")};
+  box-shadow: ${({ increseDiv }) =>
+    increseDiv ? "none" : "0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);"};
+  ${({ increseDiv }) =>
+    increseDiv
+      ? css`
+          height: calc(100% - 5rem);
+          margin-top: -2.45rem;
+        `
+      : css`
+          height: 70%;
+        `}
   ${({ open }) =>
     open
       ? css`
@@ -42,11 +61,12 @@ const Container = styled.div`
         `};
   opacity: ${({ open }) => (open ? "1" : "0")};
   transition: all 0.4s;
-
+  z-index: ${({ lastClick }) => (lastClick ? "15" : "auto")};
   visibility: ${({ open }) => (open ? "visible" : "hidden")};
   position: absolute;
-  top: 47%;
   left: 50%;
+  top: 50%;
+
   display: flex;
   flex-direction: column;
   background-color: white;
