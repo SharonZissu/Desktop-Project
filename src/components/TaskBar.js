@@ -27,8 +27,16 @@ const TaskBar = ({ taskBarArr, openCMD }) => {
           {day}/{month + 1}/{year}
         </DateContent>
       </TimeContainer>
-      {taskBarArr.map(({ type, name }, i) => (
-        <OpenedTask key={i} type={type} name={name} open={openCMD} />
+      {taskBarArr.map(({ id, type, name, open, minimized }, i) => (
+        <OpenedTask
+          key={id}
+          id={id}
+          type={type}
+          name={name}
+          open={open}
+          minimized={minimized}
+          openFunc={openCMD}
+        />
       ))}
       <StartIcon
         onMouseOver={() => setHover(true)}
@@ -79,14 +87,14 @@ const Time = styled(TimeAndData)``;
 const DateContent = styled(TimeAndData)``;
 
 const StartIcon = styled.button`
-  background-color: transparent;
   border: none;
   padding: 0.8rem 1.4rem;
   height: 100%;
+  background-color: transparent;
   &:focus {
     outline: none;
   }
   &:hover {
-    background-color: #323c55;
+    background-color: rgba(256, 256, 256, 0.1); //#323c55
   }
 `;

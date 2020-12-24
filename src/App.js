@@ -6,9 +6,10 @@ import TaskBar from "./components/TaskBar";
 import Applications from "./components/Applications";
 import CMD from "./components/CMD";
 import OptionsBar from "./components/OptionsBar";
+import StartScreen from "./components/StartScreen";
 
 //styles
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
 import backgroundImg from "./images/background.jpg";
 
@@ -36,6 +37,9 @@ function App() {
   });
   const [pageX, setPageX] = useState(null);
   const [pageY, setPageY] = useState(null);
+  const [startDesktop, setStartDesktop] = useState(false);
+
+  const startDesktopFunc = () => setStartDesktop(true);
 
   const openApplication = (type) => {
     if (type === "cmd") openCMD();
@@ -75,9 +79,11 @@ function App() {
     const [copyApplicationArr, cmdObj] = findCmdObj();
     cmdObj.minimized = true;
     setApplicationArr(copyApplicationArr);
-    const checkIfAlreadyOpen = taskBarArr.find((task) => task.type === "cmd");
-    if (!checkIfAlreadyOpen)
-      setTaskBarArr([...taskBarArr, { type: "cmd", name: "cmd" }]);
+    const taskObj = taskBarArr.find((task) => task.type === "cmd");
+    if (!taskObj) {
+      console.log(cmdObj);
+      setTaskBarArr([...taskBarArr, cmdObj]);
+    }
   };
 
   const clearCMD = () => {
@@ -304,47 +310,90 @@ function App() {
   };
 
   return (
-    <Conatiner
-      onClick={closeOptionBar}
-      onContextMenu={openOptionsBar}
-      name="main"
-    >
-      <Applications
-        applicationsArr={applicationsArr}
-        openApplication={openApplication}
-        changeApplicationName={changeApplicationName}
+    <>
+      <StartScreen
+        startDesktop={startDesktop}
+        startDesktopFunc={startDesktopFunc}
       />
-      <CMD
-        // open={checkIfCMDClicked()}
-        open={checkIfCMDClicked()}
-        minimized={checkIfCMDMinimized()}
-        closeCMD={closeCMD}
-        minimizeCMD={minimizeCMD}
-        clearCMD={clearCMD}
-        cmdArr={cmdArr}
-        sendCommand={sendCommand}
-        cmdSavedCommands={cmdSavedCommands}
-        setCountMinus1={setCountMinus1}
-        setCountPlus1={setCountPlus1}
-      />
-      <TaskBar taskBarArr={taskBarArr} openCMD={openCMD} />
-      <OptionsBar
-        pageX={pageX}
-        pageY={pageY}
-        createFolder={createFolder}
-        createTextFile={createTextFile}
-      />
+
+      <Container
+        onClick={closeOptionBar}
+        onContextMenu={openOptionsBar}
+        name="main"
+        startDesktop={startDesktop}
+      >
+        <Applications
+          applicationsArr={applicationsArr}
+          openApplication={openApplication}
+          changeApplicationName={changeApplicationName}
+        />
+        <CMD
+          // open={checkIfCMDClicked()}
+          open={checkIfCMDClicked()}
+          minimized={checkIfCMDMinimized()}
+          closeCMD={closeCMD}
+          minimizeCMD={minimizeCMD}
+          clearCMD={clearCMD}
+          cmdArr={cmdArr}
+          sendCommand={sendCommand}
+          cmdSavedCommands={cmdSavedCommands}
+          setCountMinus1={setCountMinus1}
+          setCountPlus1={setCountPlus1}
+        />
+        <TaskBar taskBarArr={taskBarArr} openCMD={openCMD} />
+        <OptionsBar
+          pageX={pageX}
+          pageY={pageY}
+          createFolder={createFolder}
+          createTextFile={createTextFile}
+        />
+      </Container>
+
       <GlobalStyle />
-    </Conatiner>
+    </>
   );
 }
 
 export default App;
 
-const Conatiner = styled.div`
-  position: relative;
+const Container = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url(${backgroundImg});
+  background-size: cover;
+  height: calc(100vh - 8rem);
+  width: calc(100vw - 8rem);
+  z-index: -1;
+
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+
+  ${({ startDesktop }) =>
+    startDesktop &&
+    css`
+      z-index: 10;
+
+      opacity: 1;
+      visibility: visible;
+      filter: none;
+      -webkit-filter: none;
+    `}
+`;
+
+/* position: relative;
   background-image: url(${backgroundImg});
   background-size: cover;
   width: 100%;
-  height: calc(100vh - 8rem); ;
-`;
+  height: calc(100vh - 8rem);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.7s ease-out;
+  ${({ startDesktop }) =>
+    startDesktop &&
+    css`
+      opacity: 1;
+      visibility: visible; */
+
+/* transition: all 1s ease-out; */

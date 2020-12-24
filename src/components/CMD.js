@@ -221,7 +221,7 @@ const Location = styled.label``;
 const CommandInput = styled.input`
   background-color: transparent;
   color: rgba(256, 256, 256, 0.7);
-
+  width: 100%;
   border: none;
   &:focus {
     outline: none;
