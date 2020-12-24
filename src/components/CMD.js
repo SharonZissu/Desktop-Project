@@ -2,13 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import ClearIcon from "@material-ui/icons/Clear";
 import RemoveIcon from "@material-ui/icons/Remove";
+import CropSquareSharpIcon from "@material-ui/icons/CropSquareSharp";
 import { v4 as uuid_v4 } from "uuid";
 
 const CMD = ({
+  id,
   open,
   minimized,
-  closeCMD,
-  minimizeCMD,
+  sizing,
+  closeApp,
+  minimizeApp,
+  sizingApp,
   clearCMD,
   cmdArr,
   sendCommand,
@@ -18,6 +22,7 @@ const CMD = ({
 }) => {
   const [command, setCommand] = useState("");
   const [enterPressed, setEnterPressed] = useState(false);
+  const [increseCmd, setIncreseCmd] = useState(false);
   const inputEl = useRef(null);
 
   useEffect(() => {
@@ -40,6 +45,14 @@ const CMD = ({
     }
   }, [open, minimized]); //command
 
+  const closeCmdHandler = () => {
+    setIncreseCmd(false);
+    closeApp(id);
+  };
+
+  const toggleCrop = () => {
+    setIncreseCmd(!increseCmd);
+  };
   const handleChange = (e) => {
     setCommand(e.target.value);
   };
@@ -73,15 +86,19 @@ const CMD = ({
   };
 
   return (
-    <Container open={open && !minimized}>
-      <Navigate>
+    <Container open={open && !minimized} increseCmd={sizing}>
+      <Navigate increseCmd={increseCmd}>
         <NavigateBtns>
-          <NavigateBtn onClick={minimizeCMD}>
+          <GreyHoverBtn onClick={() => minimizeApp(id)}>
             <RemoveIcon fontSize="large" />
-          </NavigateBtn>
-          <NavigateBtn onClick={closeCMD}>
+          </GreyHoverBtn>
+          <GreyHoverBtn onClick={() => sizingApp(id)}>
+            <CropSquareSharpIcon fontSize="large" />
+          </GreyHoverBtn>
+
+          <CloseBtn onClick={closeCmdHandler}>
             <ClearIcon fontSize="large" />
-          </NavigateBtn>
+          </CloseBtn>
         </NavigateBtns>
         <NameAndIcon>
           <Icon src={require("../images/cmd.png").default} />
@@ -124,8 +141,9 @@ const CMD = ({
 export default CMD;
 
 const Container = styled.div`
-  width: 65rem;
-  height: 40rem;
+  width: ${({ increseCmd }) => (increseCmd ? "100%" : "65rem")};
+  height: ${({ increseCmd }) => (increseCmd ? "100%" : "40rem")};
+
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -147,7 +165,10 @@ const Container = styled.div`
 
 const Navigate = styled.div`
   flex: 0 0 7%;
-  width: 65rem;
+  /* width: ${({ increseCmd }) => (increseCmd ? "100%" : "65rem")}; */
+  width: 100%;
+  /* transition: all 0.4s; */
+
   padding-right: 1.65rem;
   padding-left: 0.6rem;
   background-color: #ffffff;
@@ -171,11 +192,20 @@ const NavigateBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const CloseBtn = styled(NavigateBtn)`
   &:hover {
     background-color: #e81123;
   }
-  &:focus {
-    outline: none;
+`;
+const GreyHoverBtn = styled(NavigateBtn)`
+  &:hover {
+    background-color: #e5e5e5;
   }
 `;
 

@@ -34,7 +34,7 @@ const Application = ({
     <ApplicationContainer>
       <ApplicationImg
         src={require(`../images/${type}.png`).default}
-        onDoubleClick={() => openApplication(type)}
+        onDoubleClick={() => openApplication(id)}
       />
       {type === "cmd" ? (
         <ApplicationName>{name}</ApplicationName>

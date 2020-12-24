@@ -22,6 +22,7 @@ function App() {
       name: "שורת הפקודה",
       open: false,
       minimized: false,
+      sizing: false,
     },
   ]);
   const [cmdArr, setCmdArr] = useState([
@@ -41,8 +42,8 @@ function App() {
 
   const startDesktopFunc = () => setStartDesktop(true);
 
-  const openApplication = (type) => {
-    if (type === "cmd") openCMD();
+  const openApplication = (id) => {
+    openApp(id);
   };
 
   const findCmdObj = () => {
@@ -53,37 +54,49 @@ function App() {
     ];
   };
 
-  const openCMD = () => {
-    const [copyApplicationArr, cmdObj] = findCmdObj();
-    cmdObj.open = true;
-    cmdObj.minimized = false;
-    setApplicationArr(copyApplicationArr);
-    // const copyCmdArr = [...cmdArr];
-    // copyCmdArr.push({
-    //   id: uuid_v4(),
-    //   location: "\\Desktop",
-    //   input: "",
-    // });
-    // setCmdArr(copyCmdArr);
+  const findObj = (id) => {
+    const copyApplicationArr = [...applicationsArr];
+    return [
+      copyApplicationArr,
+      copyApplicationArr.find((app) => app.id === id),
+    ];
   };
 
-  const closeCMD = () => {
-    const [copyApplicationArr, cmdObj] = findCmdObj();
-    cmdObj.open = false;
+  const deleteObjFromTaskBar = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.sizing = false;
     setApplicationArr(copyApplicationArr);
-    const filteredTaskArr = taskBarArr.filter((task) => task.type !== "cmd");
+    const filteredTaskArr = taskBarArr.filter((task) => task.id !== id);
     setTaskBarArr(filteredTaskArr);
   };
 
-  const minimizeCMD = () => {
-    const [copyApplicationArr, cmdObj] = findCmdObj();
-    cmdObj.minimized = true;
+  const openApp = () => {
+    const [copyApplicationArr, appObj] = findCmdObj();
+    appObj.open = true;
+    appObj.minimized = false;
     setApplicationArr(copyApplicationArr);
-    const taskObj = taskBarArr.find((task) => task.type === "cmd");
+  };
+
+  const closeApp = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.open = false;
+    setApplicationArr(copyApplicationArr);
+    deleteObjFromTaskBar(id);
+  };
+  const minimizeApp = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.minimized = true;
+    setApplicationArr(copyApplicationArr);
+    const taskObj = taskBarArr.find((task) => task.id === id);
     if (!taskObj) {
-      console.log(cmdObj);
-      setTaskBarArr([...taskBarArr, cmdObj]);
+      console.log(appObj);
+      setTaskBarArr([...taskBarArr, appObj]);
     }
+  };
+  const sizingApp = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.sizing = !appObj.sizing;
+    setApplicationArr(copyApplicationArr);
   };
 
   const clearCMD = () => {
@@ -127,6 +140,15 @@ function App() {
   const checkIfCMDMinimized = () => {
     const cmdObj = applicationsArr.find((app) => app.type === "cmd");
     return cmdObj.minimized;
+  };
+
+  const checkIfCMDSizing = () => {
+    const cmdObj = applicationsArr.find((app) => app.type === "cmd");
+    return cmdObj.sizing;
+  };
+  const checkCMDId = () => {
+    const cmdObj = applicationsArr.find((app) => app.type === "cmd");
+    return cmdObj.id;
   };
 
   const createFolder = (name) => {
@@ -329,10 +351,13 @@ function App() {
         />
         <CMD
           // open={checkIfCMDClicked()}
+          id={checkCMDId()}
           open={checkIfCMDClicked()}
           minimized={checkIfCMDMinimized()}
-          closeCMD={closeCMD}
-          minimizeCMD={minimizeCMD}
+          sizing={checkIfCMDSizing()}
+          closeApp={closeApp}
+          minimizeApp={minimizeApp}
+          sizingApp={sizingApp}
           clearCMD={clearCMD}
           cmdArr={cmdArr}
           sendCommand={sendCommand}
@@ -340,7 +365,7 @@ function App() {
           setCountMinus1={setCountMinus1}
           setCountPlus1={setCountPlus1}
         />
-        <TaskBar taskBarArr={taskBarArr} openCMD={openCMD} />
+        <TaskBar taskBarArr={taskBarArr} openApp={openApp} />
         <OptionsBar
           pageX={pageX}
           pageY={pageY}
@@ -400,3 +425,36 @@ const Container = styled.div`
       visibility: visible; */
 
 /* transition: all 1s ease-out; */
+
+// const openCMD = () => {
+//   const [copyApplicationArr, cmdObj] = findCmdObj();
+//   cmdObj.open = true;
+//   cmdObj.minimized = false;
+//   setApplicationArr(copyApplicationArr);
+//   // const copyCmdArr = [...cmdArr];
+//   // copyCmdArr.push({
+//   //   id: uuid_v4(),
+//   //   location: "\\Desktop",
+//   //   input: "",
+//   // });
+//   // setCmdArr(copyCmdArr);
+// };
+
+// const closeCMD = () => {
+//   const [copyApplicationArr, cmdObj] = findCmdObj();
+//   cmdObj.open = false;
+//   setApplicationArr(copyApplicationArr);
+//   const filteredTaskArr = taskBarArr.filter((task) => task.type !== "cmd");
+//   setTaskBarArr(filteredTaskArr);
+// };
+
+// const minimizeCMD = () => {
+//   const [copyApplicationArr, cmdObj] = findCmdObj();
+//   cmdObj.minimized = true;
+//   setApplicationArr(copyApplicationArr);
+//   const taskObj = taskBarArr.find((task) => task.type === "cmd");
+//   if (!taskObj) {
+//     console.log(cmdObj);
+//     setTaskBarArr([...taskBarArr, cmdObj]);
+//   }
+// };

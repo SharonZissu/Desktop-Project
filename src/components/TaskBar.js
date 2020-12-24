@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindows } from "@fortawesome/free-brands-svg-icons";
 
-const TaskBar = ({ taskBarArr, openCMD }) => {
+const TaskBar = ({ taskBarArr, openApp }) => {
   const [hover, setHover] = useState(false);
   const date = new Date(moment().format());
   console.log(date);
@@ -35,7 +35,7 @@ const TaskBar = ({ taskBarArr, openCMD }) => {
           name={name}
           open={open}
           minimized={minimized}
-          openFunc={openCMD}
+          openFunc={() => openApp(id)}
         />
       ))}
       <StartIcon
