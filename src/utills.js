@@ -17,7 +17,7 @@ const days = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", 
 
 export const getCurrentTime = () => {
   const date = new Date(moment().format());
-  console.log(date);
+  // console.log(date);
   const hours = date.getHours();
   const dayName = days[date.getDay()];
   let minutes = date.getMinutes();

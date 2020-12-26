@@ -1,6 +1,6 @@
 import React from "react";
 import { v4 as uuid_v4 } from "uuid";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Application from "./Application";
 const Applications = ({
   applicationsArr,

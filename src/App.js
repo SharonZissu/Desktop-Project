@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuid_v4 } from "uuid";
 
 //components
@@ -8,6 +8,8 @@ import CMD from "./components/CMD";
 import OptionsBar from "./components/OptionsBar";
 import StartScreen from "./components/StartScreen";
 import TextFile from "./components/TextFile";
+import BatteryLow from "./components/BatteryLow";
+import Backdrop from "./components/Backdrop";
 //styles
 import styled, { css, keyframes } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
@@ -49,7 +51,30 @@ function App() {
   const [pageY, setPageY] = useState(null);
   const [startDesktop, setStartDesktop] = useState(false);
   const [lastAppClicked, setLastAppClicked] = useState("");
+  const [batteryLow, setBatteryLow] = useState(false);
+  const [batteryIsCharging, setBatteryIsCharging] = useState(false);
+  // const batteryTimeOut = useRef();
 
+  useEffect(() => {
+    let batteryTimeOut;
+    if (startDesktop) {
+      setTimeout(() => {
+        batteryTimeOut = setBatteryLow(true);
+        console.log("Battery low");
+      }, 5000);
+    }
+    return () => {
+      clearTimeout(batteryTimeOut);
+    };
+  }, [startDesktop, batteryLow]);
+
+  const chargedHandler = () => {
+    setBatteryIsCharging(true);
+    setTimeout(() => {
+      setBatteryIsCharging(false);
+      setBatteryLow(false);
+    }, 5000);
+  };
   const startDesktopFunc = () => setStartDesktop(true);
 
   const openApplication = (id) => {
@@ -122,17 +147,19 @@ function App() {
     });
   };
   const openOptionsBar = (e) => {
-    if (e.target instanceof HTMLDivElement) {
-      console.log(e);
-      if (e.screenY > 550) {
-        setPageX(e.pageX - 30);
-        setPageY(e.pageY - 240);
+    if (!batteryLow) {
+      if (e.target instanceof HTMLDivElement) {
+        console.log(e);
+        if (e.screenY > 550) {
+          setPageX(e.pageX - 30);
+          setPageY(e.pageY - 240);
+        } else {
+          setPageX(e.pageX - 30);
+          setPageY(e.pageY - 40);
+        }
       } else {
-        setPageX(e.pageX - 30);
-        setPageY(e.pageY - 40);
+        closeOptionBar();
       }
-    } else {
-      closeOptionBar();
     }
   };
 
@@ -402,6 +429,15 @@ function App() {
             }
           }
         })}
+
+        <BatteryLow
+          open={batteryLow}
+          chargedHandler={chargedHandler}
+          batteryIsCharging={batteryIsCharging}
+        />
+
+        <Backdrop open={batteryLow} type="main" />
+
         <Applications
           applicationsArr={applicationsArr}
           openApplication={openApplication}
@@ -438,6 +474,7 @@ function App() {
           lastAppClicked={lastAppClicked}
           handleApplicationClickedLast={handleApplicationClickedLast}
         />
+
         <TaskBar taskBarArr={taskBarArr} openApp={openApp} />
         <OptionsBar
           pageX={pageX}
