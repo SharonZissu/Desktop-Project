@@ -18,10 +18,12 @@ const days = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", 
 export const getCurrentTime = () => {
   const date = new Date(moment().format());
   // console.log(date);
-  const hours = date.getHours();
+  let hours = date.getHours();
   const dayName = days[date.getDay()];
   let minutes = date.getMinutes();
   minutes = minutes < 10 ? `0${minutes}` : minutes;
+  hours = hours < 10 ? `0${hours}` : hours;
+
   const month = date.getMonth();
   const monthName = months[month];
   const year = date.getFullYear();

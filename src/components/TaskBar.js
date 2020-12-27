@@ -10,9 +10,10 @@ const TaskBar = ({ taskBarArr, openApp }) => {
   const [hover, setHover] = useState(false);
   const date = new Date(moment().format());
   console.log(date);
-  const hours = date.getHours();
+  let hours = date.getHours();
   let minutes = date.getMinutes();
   minutes = minutes < 10 ? `0${minutes}` : minutes;
+  hours = hours < 10 ? `0${hours}` : hours;
   const month = date.getMonth();
   const year = date.getFullYear();
   const day = date.toString().split(" ")[2];

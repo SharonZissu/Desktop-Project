@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import background from "../images/start-screen-bg.png";
+import background2 from "../images/start-screen-bg2.png";
+import background3 from "../images/start-screen-bg3.png";
 import { getCurrentTime } from "../utills";
 import PersonIcon from "@material-ui/icons/Person";
 import NameModal from "./NameModal";

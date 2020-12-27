@@ -10,10 +10,13 @@ import StartScreen from "./components/StartScreen";
 import TextFile from "./components/TextFile";
 import BatteryLow from "./components/BatteryLow";
 import Backdrop from "./components/Backdrop";
+import ChangeBackground from "./components/ChangeBackground";
 //styles
 import styled, { css, keyframes } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
-import backgroundImg from "./images/background.jpg";
+import backgroundImg1 from "./images/background1.jpg";
+import backgroundImg2 from "./images/background2.jpg";
+import backgroundImg3 from "./images/background3.jpg";
 
 function App() {
   const [taskBarArr, setTaskBarArr] = useState([]);
@@ -53,20 +56,37 @@ function App() {
   const [lastAppClicked, setLastAppClicked] = useState("");
   const [batteryLow, setBatteryLow] = useState(false);
   const [batteryIsCharging, setBatteryIsCharging] = useState(false);
+  const [chosenBG, setChosenBG] = useState("");
+  const [openBgIsClicked, setOpenBgIsClicked] = useState(false);
   // const batteryTimeOut = useRef();
 
   useEffect(() => {
     let batteryTimeOut;
-    if (startDesktop) {
+    if (startDesktop && !startDesktop) {
+      console.log(startDesktop);
+      console.log(!startDesktop);
+
       setTimeout(() => {
         batteryTimeOut = setBatteryLow(true);
         console.log("Battery low");
-      }, 5000);
+      }, 3000);
     }
     return () => {
       clearTimeout(batteryTimeOut);
     };
   }, [startDesktop, batteryLow]);
+
+  const handleOpenChangeBG = () => {
+    setOpenBgIsClicked(true);
+  };
+
+  const closeChangeBg = () => {
+    setOpenBgIsClicked(false);
+  };
+  const handlePickBG = (chose) => {
+    console.log(chose);
+    setChosenBG(chose);
+  };
 
   const chargedHandler = () => {
     setBatteryIsCharging(true);
@@ -408,6 +428,7 @@ function App() {
         onContextMenu={openOptionsBar}
         name="main"
         startDesktop={startDesktop}
+        chosenBG={chosenBG}
       >
         {applicationsArr.map((app) => {
           if (app.open && app.type !== "cmd" && !app.instructions) {
@@ -475,12 +496,20 @@ function App() {
           handleApplicationClickedLast={handleApplicationClickedLast}
         />
 
+        <ChangeBackground
+          handlePickBG={handlePickBG}
+          chosenBG={chosenBG}
+          openBgIsClicked={openBgIsClicked}
+          closeChangeBg={closeChangeBg}
+        />
+
         <TaskBar taskBarArr={taskBarArr} openApp={openApp} />
         <OptionsBar
           pageX={pageX}
           pageY={pageY}
           createFolder={createFolder}
           createTextFile={createTextFile}
+          handleOpenChangeBG={handleOpenChangeBG}
         />
       </Container>
 
@@ -496,7 +525,20 @@ const Container = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-image: url(${backgroundImg});
+  ${({ chosenBG }) => {
+    if (chosenBG === 1 || !chosenBG)
+      return css`
+        background-image: url(${backgroundImg1});
+      `;
+    if (chosenBG === 2)
+      return css`
+        background-image: url(${backgroundImg2});
+      `;
+    if (chosenBG === 3)
+      return css`
+        background-image: url(${backgroundImg3});
+      `;
+  }}
   background-size: cover;
   box-shadow: 0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);
   /* height: 90%; */

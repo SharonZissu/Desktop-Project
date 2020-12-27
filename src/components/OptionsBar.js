@@ -1,7 +1,14 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import RateReviewIcon from "@material-ui/icons/RateReview";
 
-const OptionsBar = ({ pageX, pageY, createFolder, createTextFile }) => {
+const OptionsBar = ({
+  pageX,
+  pageY,
+  createFolder,
+  createTextFile,
+  handleOpenChangeBG,
+}) => {
   let xPx = 0;
   let yPx = 0;
   if (pageX && pageY) {
@@ -21,6 +28,10 @@ const OptionsBar = ({ pageX, pageY, createFolder, createTextFile }) => {
           <Line onClick={createTextFile}>
             <Label>צור מסמך טקסט</Label>
             <Icon src={require("../images/text.png").default} />
+          </Line>
+          <Line onClick={handleOpenChangeBG}>
+            <Label>שנה רקע</Label>
+            <Icon src={require("../images/view.png").default} />
           </Line>
         </Container>
       )}
@@ -45,10 +56,11 @@ const Container = styled.div`
 const Line = styled.div`
   width: 100%;
   height: 3rem;
+  padding-right: 1rem;
   /* background-color: red; */
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   &:hover {
     background-color: rgba(0, 0, 0, 0.2);
   }
