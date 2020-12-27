@@ -4,7 +4,15 @@ import ClearIcon from "@material-ui/icons/Clear";
 import RemoveIcon from "@material-ui/icons/Remove";
 import CropSquareSharpIcon from "@material-ui/icons/CropSquareSharp";
 
-const NavigateBar = ({ id, minimizeApp, sizingApp, closeApp, type, name }) => {
+const NavigateBar = ({
+  id,
+  minimizeApp,
+  sizingApp,
+  closeApp,
+  type,
+  name,
+  saved,
+}) => {
   return (
     <Navigate>
       <NavigateBtns>
@@ -14,11 +22,11 @@ const NavigateBar = ({ id, minimizeApp, sizingApp, closeApp, type, name }) => {
         <GreyHoverBtn onClick={() => sizingApp(id)}>
           <CropSquareSharpIcon fontSize="large" />
         </GreyHoverBtn>
-
         <CloseBtn onClick={() => closeApp(id)}>
           <ClearIcon fontSize="large" />
         </CloseBtn>
       </NavigateBtns>
+      {!saved && <Saved>*</Saved>}
       <NameAndIcon>
         <IconContainer>
           <Icon src={require(`../images/${type}.png`).default} />
@@ -76,6 +84,11 @@ const GreyHoverBtn = styled(NavigateBtn)`
   &:hover {
     background-color: #e5e5e5;
   }
+`;
+
+const Saved = styled.label`
+  font-size: 3rem;
+  line-height: 1.4;
 `;
 
 const NameAndIcon = styled.div`

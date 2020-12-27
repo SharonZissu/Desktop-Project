@@ -37,6 +37,9 @@ function App() {
       open: false,
       minimized: false,
       sizing: false,
+      text: "",
+      saved: true,
+      openSaveModal: false,
     },
   ]);
   const [cmdArr, setCmdArr] = useState([
@@ -133,9 +136,15 @@ function App() {
 
   const closeApp = (id) => {
     const [copyApplicationArr, appObj] = findObj(id);
-    appObj.open = false;
-    setApplicationArr(copyApplicationArr);
-    deleteObjFromTaskBar(id);
+    if (!appObj.saved) {
+      console.log("HEREEEEEEEEE");
+      appObj.openSaveModal = true;
+      setApplicationArr(copyApplicationArr);
+    } else {
+      appObj.open = false;
+      setApplicationArr(copyApplicationArr);
+      deleteObjFromTaskBar(id);
+    }
   };
   const minimizeApp = (id) => {
     const [copyApplicationArr, appObj] = findObj(id);
@@ -256,6 +265,12 @@ function App() {
       id: uuid_v4(),
       name: newName,
       type: "text",
+      open: false,
+      minimized: false,
+      sizing: false,
+      text: "",
+      saved: true,
+      openSaveModal: false,
     };
     setApplicationArr((prevState) => [...prevState, applicationObj]);
   };
@@ -416,6 +431,58 @@ function App() {
     setCmdArr(copyCmdArr);
   };
 
+  const handleTextFileChanged = (e, id) => {
+    console.log(id);
+    console.log(e.target.value);
+    const [copyApplicationArr, appObj] = findObj(id);
+    if (appObj.text !== e.target.value) {
+      console.log(appObj.text + "||!==||" + e.target.value);
+      appObj.saved = false;
+    } else {
+      console.log(appObj.text + "||===||" + e.target.value);
+
+      appObj.saved = true;
+    }
+    setApplicationArr(copyApplicationArr);
+  };
+
+  const saveTextFileWithAltS = (e, id, el) => {
+    // console.log(e);
+    // console.log(el.current.value);
+    console.log(e.key);
+    if ((e.key === "s" && e.altKey) || (e.key === "ד" && e.altKey)) {
+      console.log("hereeee");
+      const [copyApplicationArr, appObj] = findObj(id);
+      appObj.text = el.current.value;
+      appObj.saved = true;
+      setApplicationArr(copyApplicationArr);
+    }
+  };
+
+  const saveTextFileWithBtn = (id, el) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.text = el.current.value;
+    appObj.saved = true;
+    appObj.openSaveModal = false;
+    appObj.open = false;
+    setApplicationArr(copyApplicationArr);
+  };
+
+  const unSaveTextFile = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.saved = true;
+    appObj.openSaveModal = false;
+    appObj.open = false;
+    setApplicationArr(copyApplicationArr);
+  };
+
+  const CancelTextFileModal = (id) => {
+    const [copyApplicationArr, appObj] = findObj(id);
+    appObj.openSaveModal = false;
+    setApplicationArr(copyApplicationArr);
+
+  }
+
   return (
     <>
       <StartScreen
@@ -435,6 +502,7 @@ function App() {
             if (app.type === "text") {
               return (
                 <TextFile
+                  key={app.id}
                   id={app.id}
                   minimizeApp={minimizeApp}
                   sizingApp={sizingApp}
@@ -442,9 +510,17 @@ function App() {
                   open={app.open}
                   minimized={app.minimized}
                   sizing={app.sizing}
+                  text={app.text}
+                  saved={app.saved}
                   appName={app.name}
+                  openSaveModal={app.openSaveModal}
                   lastAppClicked={lastAppClicked}
                   handleApplicationClickedLast={handleApplicationClickedLast}
+                  saveTextFileWithAltS={saveTextFileWithAltS}
+                  saveTextFileWithBtn={saveTextFileWithBtn}
+                  handleTextFileChanged={handleTextFileChanged}
+                  unSaveTextFile={unSaveTextFile}
+                  CancelTextFileModal={CancelTextFileModal}
                 />
               );
             }
