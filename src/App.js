@@ -11,6 +11,7 @@ import TextFile from "./components/TextFile";
 import BatteryLow from "./components/BatteryLow";
 import Backdrop from "./components/Backdrop";
 import ChangeBackground from "./components/ChangeBackground";
+import HowFastAreU2 from "./components/HowFastAreU2";
 //styles
 import styled, { css, keyframes } from "styled-components";
 import { GlobalStyle } from "./styles/globalStyle";
@@ -38,6 +39,17 @@ function App() {
       minimized: false,
       sizing: false,
       text: "",
+      saved: true,
+      openSaveModal: false,
+    },
+    {
+      id: uuid_v4(),
+      type: "game",
+      instructions: true,
+      name: "כמה מהירים אתם 2",
+      open: false,
+      minimized: false,
+      sizing: false,
       saved: true,
       openSaveModal: false,
     },
@@ -100,10 +112,6 @@ function App() {
   };
   const startDesktopFunc = () => setStartDesktop(true);
 
-  const openApplication = (id) => {
-    openApp(id);
-  };
-
   const findObj = (id) => {
     const copyApplicationArr = [...applicationsArr];
     return [
@@ -136,8 +144,8 @@ function App() {
 
   const closeApp = (id) => {
     const [copyApplicationArr, appObj] = findObj(id);
-    if (!appObj.saved) {
-      console.log("HEREEEEEEEEE");
+
+    if (!appObj.saved && appObj.type !== "cmd") {
       appObj.openSaveModal = true;
       setApplicationArr(copyApplicationArr);
     } else {
@@ -272,7 +280,10 @@ function App() {
       saved: true,
       openSaveModal: false,
     };
+
+    console.log(applicationObj);
     setApplicationArr((prevState) => [...prevState, applicationObj]);
+    // setApplicationArr([...applicationsArr, applicationObj]);
   };
 
   const changeApplicationName = (id, newAppName) => {
@@ -468,11 +479,16 @@ function App() {
     setApplicationArr(copyApplicationArr);
   };
 
-  const unSaveTextFile = (id) => {
+  const unSaveTextFile = (id, textareaEl) => {
     const [copyApplicationArr, appObj] = findObj(id);
+    console.log(appObj);
+    textareaEl.current.value = appObj.text;
+
     appObj.saved = true;
     appObj.openSaveModal = false;
     appObj.open = false;
+    console.log(appObj);
+
     setApplicationArr(copyApplicationArr);
   };
 
@@ -480,8 +496,7 @@ function App() {
     const [copyApplicationArr, appObj] = findObj(id);
     appObj.openSaveModal = false;
     setApplicationArr(copyApplicationArr);
-
-  }
+  };
 
   return (
     <>
@@ -497,36 +512,6 @@ function App() {
         startDesktop={startDesktop}
         chosenBG={chosenBG}
       >
-        {applicationsArr.map((app) => {
-          if (app.open && app.type !== "cmd" && !app.instructions) {
-            if (app.type === "text") {
-              return (
-                <TextFile
-                  key={app.id}
-                  id={app.id}
-                  minimizeApp={minimizeApp}
-                  sizingApp={sizingApp}
-                  closeApp={closeApp}
-                  open={app.open}
-                  minimized={app.minimized}
-                  sizing={app.sizing}
-                  text={app.text}
-                  saved={app.saved}
-                  appName={app.name}
-                  openSaveModal={app.openSaveModal}
-                  lastAppClicked={lastAppClicked}
-                  handleApplicationClickedLast={handleApplicationClickedLast}
-                  saveTextFileWithAltS={saveTextFileWithAltS}
-                  saveTextFileWithBtn={saveTextFileWithBtn}
-                  handleTextFileChanged={handleTextFileChanged}
-                  unSaveTextFile={unSaveTextFile}
-                  CancelTextFileModal={CancelTextFileModal}
-                />
-              );
-            }
-          }
-        })}
-
         <BatteryLow
           open={batteryLow}
           chargedHandler={chargedHandler}
@@ -537,11 +522,11 @@ function App() {
 
         <Applications
           applicationsArr={applicationsArr}
-          openApplication={openApplication}
+          openApp={openApp}
           changeApplicationName={changeApplicationName}
         />
 
-        <TextFile
+        {/* <TextFile
           id={checkInstructionsFileId()}
           minimizeApp={minimizeApp}
           sizingApp={sizingApp}
@@ -570,7 +555,102 @@ function App() {
           setCountPlus1={setCountPlus1}
           lastAppClicked={lastAppClicked}
           handleApplicationClickedLast={handleApplicationClickedLast}
-        />
+        /> */}
+
+        {applicationsArr.map((app) => {
+          if (app.type === "text") {
+            console.log("YES");
+            return (
+              <TextFile
+                key={app.id}
+                id={app.id}
+                minimizeApp={minimizeApp}
+                sizingApp={sizingApp}
+                closeApp={closeApp}
+                open={app.open}
+                minimized={app.minimized}
+                sizing={app.sizing}
+                text={app.text}
+                saved={app.saved}
+                appName={app.name}
+                openSaveModal={app.openSaveModal}
+                lastAppClicked={lastAppClicked}
+                handleApplicationClickedLast={handleApplicationClickedLast}
+                saveTextFileWithAltS={saveTextFileWithAltS}
+                saveTextFileWithBtn={saveTextFileWithBtn}
+                handleTextFileChanged={handleTextFileChanged}
+                unSaveTextFile={unSaveTextFile}
+                CancelTextFileModal={CancelTextFileModal}
+              />
+            );
+          } else if (app.type === "cmd") {
+            return (
+              <CMD
+                // open={checkIfCMDClicked()}
+                key={app.id}
+                id={app.id}
+                open={app.open}
+                minimized={app.minimized}
+                sizing={app.sizing}
+                closeApp={closeApp}
+                minimizeApp={minimizeApp}
+                sizingApp={sizingApp}
+                clearCMD={clearCMD}
+                cmdArr={cmdArr}
+                sendCommand={sendCommand}
+                cmdSavedCommands={cmdSavedCommands}
+                setCountMinus1={setCountMinus1}
+                setCountPlus1={setCountPlus1}
+                lastAppClicked={lastAppClicked}
+                handleApplicationClickedLast={handleApplicationClickedLast}
+              />
+            );
+          } else if (app.type === "game") {
+            return (
+              <HowFastAreU2
+                key={app.id}
+                id={app.id}
+                open={app.open}
+                minimized={app.minimized}
+                sizing={app.sizing}
+                closeApp={closeApp}
+                minimizeApp={minimizeApp}
+                sizingApp={sizingApp}
+              />
+            );
+          }
+        })}
+
+        {/* {applicationsArr.map((app) => {
+          if (app.open && app.type !== "cmd" && !app.instructions) {
+            if (app.type === "text") {
+              console.log("YES");
+              return (
+                <TextFile
+                  key={app.id}
+                  id={app.id}
+                  minimizeApp={minimizeApp}
+                  sizingApp={sizingApp}
+                  closeApp={closeApp}
+                  open={app.open}
+                  minimized={app.minimized}
+                  sizing={app.sizing}
+                  text={app.text}
+                  saved={app.saved}
+                  appName={app.name}
+                  openSaveModal={app.openSaveModal}
+                  lastAppClicked={lastAppClicked}
+                  handleApplicationClickedLast={handleApplicationClickedLast}
+                  saveTextFileWithAltS={saveTextFileWithAltS}
+                  saveTextFileWithBtn={saveTextFileWithBtn}
+                  handleTextFileChanged={handleTextFileChanged}
+                  unSaveTextFile={unSaveTextFile}
+                  CancelTextFileModal={CancelTextFileModal}
+                />
+              );
+            }
+          }
+        })} */}
 
         <ChangeBackground
           handlePickBG={handlePickBG}

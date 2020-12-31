@@ -26,7 +26,7 @@ const NavigateBar = ({
           <ClearIcon fontSize="large" />
         </CloseBtn>
       </NavigateBtns>
-      {!saved && <Saved>*</Saved>}
+      {!saved && type !== "cmd" && type !== "game" && <Saved>*</Saved>}
       <NameAndIcon>
         <IconContainer>
           <Icon src={require(`../images/${type}.png`).default} />

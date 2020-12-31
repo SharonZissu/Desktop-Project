@@ -5,7 +5,7 @@ const Application = ({
   id,
   type,
   name,
-  openApplication,
+  openApp,
   changeApplicationName,
   instructions,
 }) => {
@@ -35,10 +35,10 @@ const Application = ({
     <ApplicationContainer>
       <ApplicationImg
         src={require(`../images/${type}.png`).default}
-        onDoubleClick={() => openApplication(id)}
+        onDoubleClick={() => openApp(id)}
       />
-      {(type === "cmd" || instructions) && (
-        <ApplicationName>{name}</ApplicationName>
+      {(type === "cmd" || instructions || type === "game") && (
+        <ApplicationName dir="rtl">{name}</ApplicationName>
       )}
       {type !== "cmd" && !instructions && (
         <ApplicationNameInput
@@ -71,6 +71,7 @@ const ApplicationContainer = styled.div`
 const ApplicationName = styled.label`
   color: white;
   font-size: 1.4rem;
+  text-align: center;
 `;
 
 const ApplicationNameInput = styled.input`

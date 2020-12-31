@@ -61,7 +61,9 @@ const TextFile = ({
         </ContentContainer>
         <BtnsContainer>
           <CancelBtn onClick={() => CancelTextFileModal(id)}>ביטול</CancelBtn>
-          <UnSaveBtn onClick={() => unSaveTextFile(id)}>אל תשמור</UnSaveBtn>
+          <UnSaveBtn onClick={() => unSaveTextFile(id, textareaEl)}>
+            אל תשמור
+          </UnSaveBtn>
           <SaveBtn onClick={() => saveTextFileWithBtn(id, textareaEl)}>
             שמור
           </SaveBtn>
@@ -74,32 +76,43 @@ const TextFile = ({
 export default TextFile;
 
 const Container = styled.div`
-  width: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")};
+  /* width: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")}; */
   /* height: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")}; */
-  border: ${({ increseDiv }) => (increseDiv ? "none" : "1px solid black")};
-  box-shadow: ${({ increseDiv }) =>
-    increseDiv ? "none" : "0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);"};
+  /* border: ${({ increseDiv }) =>
+    increseDiv ? "none" : "1px solid black"}; */
+  /* box-shadow: ${({ increseDiv }) =>
+    increseDiv ? "none" : "0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1)"}; */
   ${({ increseDiv }) =>
     increseDiv
       ? css`
           height: calc(100% - 5rem);
           margin-top: -2.45rem;
+          width: 100%;
+          box-shadow: none;
+          border: none;
         `
       : css`
           height: 70%;
+          width: 70%;
+          box-shadow: 0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);
+          border: 1px solid black;
         `}
   ${({ open }) =>
     open
       ? css`
           transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+          visibility: visible;
         `
       : css`
           transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0;
+          visibility: hidden;
         `};
-  opacity: ${({ open }) => (open ? "1" : "0")};
+  /* opacity: ${({ open }) => (open ? "1" : "0")}; */
   transition: all 0.4s;
   z-index: ${({ lastClick }) => (lastClick ? "15" : "auto")};
-  visibility: ${({ open }) => (open ? "visible" : "hidden")};
+  /* visibility: ${({ open }) => (open ? "visible" : "hidden")}; */
   position: absolute;
   left: 50%;
   top: 50%;

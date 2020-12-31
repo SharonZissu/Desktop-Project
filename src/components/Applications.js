@@ -2,11 +2,7 @@ import React from "react";
 import { v4 as uuid_v4 } from "uuid";
 import styled, { css } from "styled-components";
 import Application from "./Application";
-const Applications = ({
-  applicationsArr,
-  openApplication,
-  changeApplicationName,
-}) => {
+const Applications = ({ applicationsArr, openApp, changeApplicationName }) => {
   return (
     <Container>
       {applicationsArr.map((app) => {
@@ -17,7 +13,7 @@ const Applications = ({
             id={app.id}
             type={app.type}
             name={app.name}
-            openApplication={openApplication}
+            openApp={openApp}
             changeApplicationName={changeApplicationName}
             instructions={app.instructions}
           />
