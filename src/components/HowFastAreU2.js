@@ -41,20 +41,31 @@ const HowFastAreU2 = ({
   const [gameStart, setGameStart] = useState(false);
   const [gameFinish, setGameFinish] = useState(false);
   const [keyboardColor, setKeyboardColor] = useState(true);
+
   const gameRef = useRef(null);
+  let timeout = useRef(null);
 
   useEffect(() => {
-    console.log(gameRef);
-    console.log(gameRef.current);
     if (open) {
-      console.log("Focus now!!!");
-      if (gameRef.current) gameRef.current.focus();
+      console.log(gameRef);
+      console.log(gameRef.current);
+
+      if (gameRef.current) {
+        console.log("Focus now!!!");
+        timeout = setTimeout(() => {
+          gameRef.current.focus();
+        }, 400); //because the transition of 0.4s in the animation
+      }
     } else {
       restartGame();
+      clearTimeout(timeout);
     }
-
     randomNextKey();
-  }, [open]); //When click on the application in desktop then it will focus
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [open, minimized]); //When click on the application in desktop then it will focus
 
   const randomNextKey = () => {
     const keysArr = [
@@ -66,7 +77,6 @@ const HowFastAreU2 = ({
     ];
 
     const itemNum = Math.floor(Math.random() * keysArr.length);
-    console.log("NUMMMMMMMMMMMMMMMMMMMM", itemNum);
     setNextKey(keysArr[itemNum]);
   };
 
@@ -115,7 +125,7 @@ const HowFastAreU2 = ({
   return (
     <Container
       onKeyDown={(e) => handleKeyPressed(e)}
-      tabIndex="-1"
+      tabIndex="0"
       ref={gameRef}
       open={open && !minimized}
       increseDiv={sizing}
@@ -129,10 +139,13 @@ const HowFastAreU2 = ({
         name="2 כמה מהירים אתם"
       />
       <GameBoard keyboardColor={keyboardColor}>
-        <IconContainer>
+        <IconContainer sizing={sizing}>
           <img
             src={require("../images/keyboardIcon.png").default}
-            style={{ height: "16rem", width: "150%" }}
+            style={{
+              height: sizing ? "20rem" : "18rem",
+              width: sizing ? "170%" : "150%",
+            }}
           />
         </IconContainer>
 
@@ -182,13 +195,9 @@ const HowFastAreU2 = ({
 export default HowFastAreU2;
 
 const Container = styled.div`
-  /* height: 80%;
-  width: 90%; */
-  /* padding: 2rem; */
   background-color: white;
   border: 0.4rem solid black;
   overflow: hidden;
-  /* outline: 1rem solid red; */
   position: absolute;
   left: 50%;
   top: 47%;
@@ -197,9 +206,9 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.4s;
-  /* &:focus {
+  &:focus {
     outline: none;
-  } */
+  }
   ${({ increseDiv }) =>
     increseDiv
       ? css`
@@ -235,7 +244,6 @@ const GameBoard = styled.div`
   height: 27%;
   width: 100%;
   position: relative;
-  /* background-color: #eee; */
   ${({ keyboardColor }) =>
     keyboardColor
       ? css`
@@ -262,7 +270,7 @@ const GameContent = styled.div`
 const IconContainer = styled.div`
   position: absolute;
 
-  left: -6.5rem;
+  left: ${({ sizing }) => (sizing ? "-8.5rem" : "-6.5rem")};
   opacity: 0.075;
 `;
 

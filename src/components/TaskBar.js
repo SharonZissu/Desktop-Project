@@ -9,7 +9,6 @@ import { faWindows } from "@fortawesome/free-brands-svg-icons";
 const TaskBar = ({ taskBarArr, openApp }) => {
   const [hover, setHover] = useState(false);
   const date = new Date(moment().format());
-  console.log(date);
   let hours = date.getHours();
   let minutes = date.getMinutes();
   minutes = minutes < 10 ? `0${minutes}` : minutes;

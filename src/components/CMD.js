@@ -25,6 +25,7 @@ const CMD = ({
   const [enterPressed, setEnterPressed] = useState(false);
   const [increseCmd, setIncreseCmd] = useState(false);
   const inputEl = useRef(null);
+  let timeoutRef = useRef(null);
 
   useEffect(() => {
     inputEl.current.focus();
@@ -35,7 +36,7 @@ const CMD = ({
     if (open) {
       if (inputEl.current) {
         console.log(inputEl.current);
-        setTimeout(() => {
+        timeoutRef = setTimeout(() => {
           inputEl.current.focus();
         }, 400); //because the transition of 0.4s in the animation
       }
@@ -43,7 +44,11 @@ const CMD = ({
       setEnterPressed(false);
     } else {
       clearCMD();
+      clearTimeout(timeoutRef);
     }
+    return () => {
+      clearTimeout(timeoutRef);
+    };
   }, [open, minimized]); //command
 
   const closeCmdHandler = () => {

@@ -289,7 +289,17 @@ function App() {
   const changeApplicationName = (id, newAppName) => {
     const copyApplicationArr = [...applicationsArr];
     const findApp = copyApplicationArr.find((app) => app.id === id);
-    findApp.name = newAppName;
+    if (newAppName.trim() === "") {
+      console.log("YESSSSS");
+      if (findApp.type === "folder") findApp.name = "תיקייה חדשה";
+      else if (findApp.type === "text") {
+        console.log("SDDSFSFDSFSD");
+        findApp.name = "מסמך טקסט";
+      }
+    } else {
+      console.log("noooooooooo");
+      findApp.name = newAppName;
+    }
     setApplicationArr(copyApplicationArr);
   };
 
@@ -544,6 +554,7 @@ function App() {
           open={checkIfCMDClicked()}
           minimized={checkIfCMDMinimized()}
           sizing={checkIfCMDSizing()}
+
           closeApp={closeApp}
           minimizeApp={minimizeApp}
           sizingApp={sizingApp}
@@ -559,7 +570,6 @@ function App() {
 
         {applicationsArr.map((app) => {
           if (app.type === "text") {
-            console.log("YES");
             return (
               <TextFile
                 key={app.id}

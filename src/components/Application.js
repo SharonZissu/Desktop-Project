@@ -13,8 +13,16 @@ const Application = ({
   const [newAppName, setNewAppName] = useState(name);
   const inputNameEl = useRef(null);
   useEffect(() => {
-    if (inputNameEl.current) inputNameEl.current.focus();
+    if (inputNameEl.current) {
+      inputNameEl.current.focus();
+      inputNameEl.current.select();
+    }
   }, []);
+
+  const handleOnFocus = () => {
+    inputNameEl.current.focus();
+    inputNameEl.current.select();
+  };
 
   const handleChange = (e) => {
     setNewAppName(e.target.value);
@@ -23,12 +31,21 @@ const Application = ({
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       changeApplicationName(id, newAppName);
+      if (newAppName.trim() === "") {
+        if (type === "text") setNewAppName("מסמך טקסט");
+        else if (type === "folder") setNewAppName("תיקייה חדשה");
+      }
       inputNameEl.current.blur();
     }
   };
 
   const saveName = () => {
     changeApplicationName(id, newAppName);
+    if (newAppName.trim() === "") {
+      if (type === "text") setNewAppName("מסמך טקסט");
+      else if (type === "folder") setNewAppName("תיקייה חדשה");
+    }
+
     inputNameEl.current.blur();
   };
   return (
@@ -48,6 +65,7 @@ const Application = ({
           onKeyDown={handleKeyDown}
           ref={inputNameEl}
           onBlur={saveName}
+          onFocus={handleOnFocus}
           rows="2"
         />
       )}
