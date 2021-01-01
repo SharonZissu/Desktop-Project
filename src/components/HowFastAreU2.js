@@ -33,6 +33,7 @@ const HowFastAreU2 = ({
   minimizeApp,
   sizingApp,
   closeApp,
+  handleApplicationClickedLast,
 }) => {
   const [keyState, setKeyState] = useState("");
   const [nextKey, setNextKey] = useState("");
@@ -125,6 +126,7 @@ const HowFastAreU2 = ({
   return (
     <Container
       onKeyDown={(e) => handleKeyPressed(e)}
+      onClick={() => handleApplicationClickedLast(id)}
       tabIndex="0"
       ref={gameRef}
       open={open && !minimized}

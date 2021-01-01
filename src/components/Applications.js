@@ -2,13 +2,20 @@ import React from "react";
 import { v4 as uuid_v4 } from "uuid";
 import styled, { css } from "styled-components";
 import Application from "./Application";
-const Applications = ({ applicationsArr, openApp, changeApplicationName }) => {
+const Applications = ({
+  applicationsArr,
+  openApp,
+  changeApplicationName,
+  handleAppNameInputChange,
+}) => {
   return (
     <Container>
       {applicationsArr.map((app) => {
         // console.log(app.name);
         return (
           <Application
+            handleAppNameInputChange={handleAppNameInputChange}
+            applicationsArr={applicationsArr}
             key={app.id}
             id={app.id}
             type={app.type}

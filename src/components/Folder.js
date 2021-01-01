@@ -2,8 +2,9 @@ import React, { useRef } from "react";
 import styled, { css, keyframes } from "styled-components";
 import NavigateBar from "./NavigateBar";
 import ClearIcon from "@material-ui/icons/Clear";
+import Applications from "./Applications";
 
-const TextFile = ({
+const Folder = ({
   id,
   minimizeApp,
   sizingApp,
@@ -11,10 +12,9 @@ const TextFile = ({
   open,
   minimized,
   sizing,
-  text,
   saved,
   appName,
-  openSaveModal,
+  appsInFolder,
   lastAppClicked,
   handleApplicationClickedLast,
   saveTextFileWithAltS,
@@ -22,12 +22,14 @@ const TextFile = ({
   handleTextFileChanged,
   unSaveTextFile,
   CancelTextFileModal,
+  openApp,
+  changeApplicationName,
+  handleAppNameInputChange,
 }) => {
   const textareaEl = useRef(null);
 
   return (
     <Container
-      onKeyDown={(e) => saveTextFileWithAltS(e, id, textareaEl)}
       onClick={() => handleApplicationClickedLast(id)}
       open={open && !minimized}
       increseDiv={sizing}
@@ -38,42 +40,71 @@ const TextFile = ({
         minimizeApp={minimizeApp}
         sizingApp={sizingApp}
         closeApp={closeApp}
-        type="text"
+        type="folder"
         name={appName}
         saved={saved}
       />
-      <TextContainer
-        ref={textareaEl}
-        dir="rtl"
-        defaultValue={text}
-        onChange={(e) => handleTextFileChanged(e, id)}
-      ></TextContainer>
-
-      <SaveModal openSaveModal={openSaveModal}>
-        <NameAndCloseIcon>
-          <CloseIcon>
-            <ClearIcon />
-          </CloseIcon>
-          <Name>פנקס רשימות</Name>
-        </NameAndCloseIcon>
-        <ContentContainer>
-          <Content dir="rtl">האם ברצונך לשמור שינויים ב- {appName}?</Content>
-        </ContentContainer>
-        <BtnsContainer>
-          <CancelBtn onClick={() => CancelTextFileModal(id)}>ביטול</CancelBtn>
-          <UnSaveBtn onClick={() => unSaveTextFile(id, textareaEl)}>
-            אל תשמור
-          </UnSaveBtn>
-          <SaveBtn onClick={() => saveTextFileWithBtn(id, textareaEl)}>
-            שמור
-          </SaveBtn>
-        </BtnsContainer>
-      </SaveModal>
+      <FolderContainer accessKey={id}>
+        <Applications
+          applicationsArr={appsInFolder}
+          openApp={openApp}
+          changeApplicationName={changeApplicationName}
+          handleAppNameInputChange={handleAppNameInputChange}
+        />
+        {/* if(app.type === 'folder') { 
+          //   return (
+          //     <Folder
+          //       key={app.id}
+          //       id={app.id}
+          //       minimizeApp={minimizeApp}
+          //       sizingApp={sizingApp}
+          //       closeApp={closeApp}
+          //       open={app.open}
+          //       minimized={app.minimized}
+          //       sizing={app.sizing}
+          //       saved={app.saved}
+          //       appName={app.name}
+          //       appsInFolder={app.appsInFolder}
+          //       lastAppClicked={lastAppClicked}
+          //       handleApplicationClickedLast={handleApplicationClickedLast}
+          //       saveTextFileWithAltS={saveTextFileWithAltS}
+          //       saveTextFileWithBtn={saveTextFileWithBtn}
+          //       handleTextFileChanged={handleTextFileChanged}
+          //       unSaveTextFile={unSaveTextFile}
+          //       CancelTextFileModal={CancelTextFileModal}
+          //     />
+          //   )
+          // } else if(app.type === 'text') {
+          //   return (
+          //     <TextFile
+          //     key={app.id}
+          //     id={app.id}
+          //     minimizeApp={minimizeApp}
+          //     sizingApp={sizingApp}
+          //     closeApp={closeApp}
+          //     open={app.open}
+          //     minimized={app.minimized}
+          //     sizing={app.sizing}
+          //     text={app.text}
+          //     saved={app.saved}
+          //     appName={app.name}
+          //     openSaveModal={app.openSaveModal}
+          //     lastAppClicked={lastAppClicked}
+          //     handleApplicationClickedLast={handleApplicationClickedLast}
+          //     saveTextFileWithAltS={saveTextFileWithAltS}
+          //     saveTextFileWithBtn={saveTextFileWithBtn}
+          //     handleTextFileChanged={handleTextFileChanged}
+          //     unSaveTextFile={unSaveTextFile}
+          //     CancelTextFileModal={CancelTextFileModal}
+          //   />
+          //   )
+          // }*/}
+      </FolderContainer>
     </Container>
   );
 };
 
-export default TextFile;
+export default Folder;
 
 const Container = styled.div`
   /* width: ${({ increseDiv }) => (increseDiv ? "100%" : "70%")}; */
@@ -90,12 +121,14 @@ const Container = styled.div`
           width: 100%;
           box-shadow: none;
           border: none;
+          top: 50%;
         `
       : css`
-          height: 70%;
-          width: 70%;
+          height: 80%;
+          width: 80%;
           box-shadow: 0 1rem 2rem 0.5rem rgba(0, 0, 0, 0.1);
           border: 1px solid black;
+          top: 47%;
         `}
   ${({ open }) =>
     open
@@ -115,22 +148,18 @@ const Container = styled.div`
   /* visibility: ${({ open }) => (open ? "visible" : "hidden")}; */
   position: absolute;
   left: 50%;
-  top: 50%;
 
   display: flex;
   flex-direction: column;
   background-color: white;
 `;
 
-const TextContainer = styled.textarea`
+const FolderContainer = styled.div`
   background-color: white;
   width: 100%;
   flex: 1;
-  overflow: scroll;
-  font-size: 2.4rem;
   color: black;
   border: none;
-  /* color: rgba(256, 256, 256, 0.7); */
   border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
   padding: 0.4rem;
   &:focus {

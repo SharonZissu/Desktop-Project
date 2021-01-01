@@ -8,6 +8,9 @@ const OptionsBar = ({
   createFolder,
   createTextFile,
   handleOpenChangeBG,
+  folderWantsToAddId,
+  createFolderInFolder,
+  createTextFileInFolder,
 }) => {
   let xPx = 0;
   let yPx = 0;
@@ -35,6 +38,23 @@ const OptionsBar = ({
           </Line>
         </Container>
       )}
+      {folderWantsToAddId && (
+        <Container x={xPx} y={yPx}>
+          {/* <Line onClick={() => createFolder(undefined)}> */}
+          <Line onClick={() => createFolderInFolder(folderWantsToAddId)}>
+            <Label>צור תיקיה חדשה</Label>
+            <Icon src={require("../images/folder.png").default} />
+          </Line>
+          <Line onClick={createTextFileInFolder}>
+            <Label>צור מסמך טקסט</Label>
+            <Icon src={require("../images/text.png").default} />
+          </Line>
+          <Line onClick={handleOpenChangeBG}>
+            <Label>שנה רקע</Label>
+            <Icon src={require("../images/view.png").default} />
+          </Line>
+        </Container>
+      )}
     </>
   );
 };
@@ -51,6 +71,7 @@ const Container = styled.div`
   box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
+  z-index: 25;
 `;
 
 const Line = styled.div`

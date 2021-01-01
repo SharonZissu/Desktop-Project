@@ -106,6 +106,7 @@ const CMD = ({
         type="cmd"
         name="שורת הפקודה"
       />
+
       <CommandsContainer>
         <Heading>
           Microsoft Windows <br /> (c) 2020 Microsoft Corporation. All rights
@@ -153,7 +154,7 @@ const Container = styled.div`
       : css`
           height: 40rem;
         `}
-  z-index: ${({ lastClick }) => (lastClick ? "15" : "auto")};
+  z-index: ${({ lastClicked }) => (lastClicked ? "15" : "14")};
 
   display: flex;
   flex-direction: column;

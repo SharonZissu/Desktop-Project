@@ -2,20 +2,27 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 
 const Application = ({
+  applicationsArr,
   id,
   type,
   name,
   openApp,
   changeApplicationName,
   instructions,
+  handleAppNameInputChange,
 }) => {
   // console.log(name);
-  const [newAppName, setNewAppName] = useState(name);
   const inputNameEl = useRef(null);
+  let timer = useRef(null);
   useEffect(() => {
+    console.log("useEffect....");
+    console.log(inputNameEl);
+    console.log(inputNameEl.current);
     if (inputNameEl.current) {
-      inputNameEl.current.focus();
-      inputNameEl.current.select();
+      timer = setTimeout(() => {
+        inputNameEl.current.focus();
+        inputNameEl.current.select();
+      }, [100]);
     }
   }, []);
 
@@ -24,27 +31,36 @@ const Application = ({
     inputNameEl.current.select();
   };
 
-  const handleChange = (e) => {
-    setNewAppName(e.target.value);
-  };
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      changeApplicationName(id, newAppName);
-      if (newAppName.trim() === "") {
-        if (type === "text") setNewAppName("מסמך טקסט");
-        else if (type === "folder") setNewAppName("תיקייה חדשה");
-      }
+      // changeApplicationName(id, newAppName);
+      // if (newAppName.trim() === "") {
+      //   if (type === "text") setNewAppName("מסמך טקסט");
+      //   else if (type === "folder") setNewAppName("תיקייה חדשה");
+      // }
       inputNameEl.current.blur();
     }
   };
 
   const saveName = () => {
-    changeApplicationName(id, newAppName);
-    if (newAppName.trim() === "") {
-      if (type === "text") setNewAppName("מסמך טקסט");
-      else if (type === "folder") setNewAppName("תיקייה חדשה");
-    }
+    changeApplicationName(id);
+
+    // let newName;
+    // if (newAppName.trim() === "") {
+    //   if (type === "text") {
+    //     newName = "מסמך טקסט";
+    //   } else if (type === "folder") newName = "תיקייה חדשה";
+    // }
+    // console.log("applicationsArr", applicationsArr);
+    // const extraStr = applicationsArr.filter(
+    //   (app) => app.type === type && app.name === newName && app.id !== id
+    // ).length;
+    // console.log("extraStr", extraStr);
+
+    // if (extraStr) newName = `(${extraStr})` + newName;
+    // console.log("newName", newName);
+
+    // setNewAppName(newName);
 
     inputNameEl.current.blur();
   };
@@ -60,8 +76,8 @@ const Application = ({
       {type !== "cmd" && !instructions && (
         <ApplicationNameInput
           type="text"
-          value={newAppName}
-          onChange={handleChange}
+          value={name}
+          onChange={(e) => handleAppNameInputChange(e.target.value, id)}
           onKeyDown={handleKeyDown}
           ref={inputNameEl}
           onBlur={saveName}
