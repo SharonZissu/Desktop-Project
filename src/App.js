@@ -224,8 +224,11 @@ function App() {
   //execute when clicking right click on mouse
   //opens the options bar
   const openOptionsBar = (e) => {
+    e.preventDefault();
     if (!batteryLow) {
       console.log(e);
+      console.log("e.screenY", e.screenY);
+      console.log("e.screenx", e.screenX);
       if (e.target instanceof HTMLDivElement) {
         console.log(e);
         console.log(e.target.accessKey);
@@ -233,17 +236,17 @@ function App() {
           console.log("SUDSFSDKJFHSDKFJHSDFKHSDF");
           console.log(e.target.accessKey);
           setFolderWantsToAddId(e.target.accessKey);
-        } else {
-          if (e.screenY > 550) {
-            console.log("e.screenY > 550");
-            setPageX(e.pageX - 30);
-            setPageY(e.pageY - 240);
-          } else {
-            console.log("ELSE");
+        }
 
-            setPageX(e.pageX - 30);
-            setPageY(e.pageY - 40);
-          }
+        if (e.screenY > 550) {
+          console.log("e.screenY > 550");
+          setPageX(e.pageX - 30);
+          setPageY(e.pageY - 240);
+        } else {
+          console.log("ELSE");
+
+          setPageX(e.pageX - 30);
+          setPageY(e.pageY - 40);
         }
       } else {
         console.log("CLOSECLOSE");
@@ -256,6 +259,7 @@ function App() {
   const closeOptionBar = () => {
     setPageX(null);
     setPageY(null);
+    setFolderWantsToAddId(null);
   };
 
   const createFolderInFolder = (folderId) => {
@@ -271,13 +275,37 @@ function App() {
       minimized: false,
       sizing: false,
       appsInFolder: [],
+      parentFolderId: appObj.id,
     };
     console.log("appObj.appsInFolder", appObj.appsInFolder);
 
     appObj.appsInFolder.push(applicationObj);
-    setApplicationArr(copyApplicationArr);
+    setApplicationArr([...copyApplicationArr, applicationObj]);
+    setFolderWantsToAddId(null);
   };
-  const createTextFileInFolder = () => {};
+  const createTextFileInFolder = (folderId) => {
+    console.log("folderId", folderId);
+    const [copyApplicationArr, appObj] = findObj(folderId);
+    console.log("appObj", appObj);
+
+    const applicationObj = {
+      id: uuid_v4(),
+      name: "מסמך טקסט",
+      type: "text",
+      open: false,
+      minimized: false,
+      sizing: false,
+      text: "",
+      saved: true,
+      openSaveModal: false,
+      parentFolderId: appObj.id,
+    };
+    console.log("appObj.appsInFolder", appObj.appsInFolder);
+
+    appObj.appsInFolder.push(applicationObj);
+    setApplicationArr([...copyApplicationArr, applicationObj]);
+    setFolderWantsToAddId(null);
+  };
 
   //create a folder - when clicking on the option in options bar
   const createFolder = (name) => {
@@ -586,6 +614,7 @@ function App() {
           openApp={openApp}
           changeApplicationName={changeApplicationName}
           handleAppNameInputChange={handleAppNameInputChange}
+          typeOfMap="desktop"
         />
         {/* <TextFile
           id={checkInstructionsFileId()}
@@ -680,6 +709,7 @@ function App() {
                 saved={app.saved}
                 appName={app.name}
                 appsInFolder={app.appsInFolder}
+                parentFolderId={app.parentFolderId}
                 lastAppClicked={lastAppClicked}
                 handleApplicationClickedLast={handleApplicationClickedLast}
                 saveTextFileWithAltS={saveTextFileWithAltS}

@@ -45,6 +45,7 @@ export default ChangeBackground;
 const Container = styled.div`
   /* background-color: rgba(256, 256, 256, 0.4); */
   background-color: white;
+  z-index: 200;
   height: 25rem;
   width: 80rem;
   border: 0.1rem solid black;

@@ -21,7 +21,7 @@ const OptionsBar = ({
   }
   return (
     <>
-      {pageX && (
+      {pageX && !folderWantsToAddId && (
         <Container x={xPx} y={yPx}>
           {/* <Line onClick={() => createFolder(undefined)}> */}
           <Line onClick={createFolder}>
@@ -45,7 +45,7 @@ const OptionsBar = ({
             <Label>צור תיקיה חדשה</Label>
             <Icon src={require("../images/folder.png").default} />
           </Line>
-          <Line onClick={createTextFileInFolder}>
+          <Line onClick={() => createTextFileInFolder(folderWantsToAddId)}>
             <Label>צור מסמך טקסט</Label>
             <Icon src={require("../images/text.png").default} />
           </Line>
@@ -71,7 +71,7 @@ const Container = styled.div`
   box-shadow: 0.2rem 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  z-index: 25;
+  z-index: 205;
 `;
 
 const Line = styled.div`

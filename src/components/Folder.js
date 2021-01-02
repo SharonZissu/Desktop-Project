@@ -50,6 +50,7 @@ const Folder = ({
           openApp={openApp}
           changeApplicationName={changeApplicationName}
           handleAppNameInputChange={handleAppNameInputChange}
+          typeOfMap="folderInFolder"
         />
         {/* if(app.type === 'folder') { 
           //   return (
@@ -161,7 +162,7 @@ const FolderContainer = styled.div`
   color: black;
   border: none;
   border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
-  padding: 0.4rem;
+  padding: 2rem;
   &:focus {
     outline: none;
   }

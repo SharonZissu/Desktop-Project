@@ -7,9 +7,10 @@ const Applications = ({
   openApp,
   changeApplicationName,
   handleAppNameInputChange,
+  typeOfMap,
 }) => {
   return (
-    <Container>
+    <Container typeOfMap={typeOfMap}>
       {applicationsArr.map((app) => {
         // console.log(app.name);
         return (
@@ -20,9 +21,11 @@ const Applications = ({
             id={app.id}
             type={app.type}
             name={app.name}
+            parentFolderId={app.parentFolderId}
             openApp={openApp}
             changeApplicationName={changeApplicationName}
             instructions={app.instructions}
+            typeOfMap={typeOfMap}
           />
         );
       })}
@@ -37,12 +40,13 @@ const Container = styled.div`
   /* width: 100%; */
 
   height: 100%;
+  margin-top: ${({ typeOfMap }) => (typeOfMap === "desktop" ? "0" : "3rem")};
   max-height: 100%;
   /* width: 100%; */
   position: absolute;
   top: 0;
   right: 0;
-  padding: 3rem;
+  padding: 5.5rem 3rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

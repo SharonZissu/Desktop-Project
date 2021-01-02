@@ -7,9 +7,11 @@ const Application = ({
   type,
   name,
   openApp,
+  parentFolderId,
   changeApplicationName,
   instructions,
   handleAppNameInputChange,
+  typeOfMap,
 }) => {
   // console.log(name);
   const inputNameEl = useRef(null);
@@ -65,27 +67,35 @@ const Application = ({
     inputNameEl.current.blur();
   };
   return (
-    <ApplicationContainer>
-      <ApplicationImg
-        src={require(`../images/${type}.png`).default}
-        onDoubleClick={() => openApp(id)}
-      />
-      {(type === "cmd" || instructions || type === "game") && (
-        <ApplicationName dir="rtl">{name}</ApplicationName>
+    <>
+      {((typeOfMap === "desktop" && !parentFolderId) ||
+        (typeOfMap === "folderInFolder" && parentFolderId)) && (
+        <ApplicationContainer>
+          <ApplicationImg
+            src={require(`../images/${type}.png`).default}
+            onDoubleClick={() => openApp(id)}
+          />
+          {(type === "cmd" || instructions || type === "game") && (
+            <ApplicationName typeOfMap={typeOfMap} dir="rtl">
+              {name}
+            </ApplicationName>
+          )}
+          {type !== "cmd" && !instructions && (
+            <ApplicationNameInput
+              typeOfMap={typeOfMap}
+              type="text"
+              value={name}
+              onChange={(e) => handleAppNameInputChange(e.target.value, id)}
+              onKeyDown={handleKeyDown}
+              ref={inputNameEl}
+              onBlur={saveName}
+              onFocus={handleOnFocus}
+              rows="2"
+            />
+          )}
+        </ApplicationContainer>
       )}
-      {type !== "cmd" && !instructions && (
-        <ApplicationNameInput
-          type="text"
-          value={name}
-          onChange={(e) => handleAppNameInputChange(e.target.value, id)}
-          onKeyDown={handleKeyDown}
-          ref={inputNameEl}
-          onBlur={saveName}
-          onFocus={handleOnFocus}
-          rows="2"
-        />
-      )}
-    </ApplicationContainer>
+    </>
   );
 };
 
@@ -103,18 +113,19 @@ const ApplicationContainer = styled.div`
   margin-left: 3rem;
 `;
 const ApplicationName = styled.label`
-  color: white;
+  color: ${({ typeOfMap }) => (typeOfMap === "desktop" ? "white" : "black")};
   font-size: 1.4rem;
   text-align: center;
 `;
 
 const ApplicationNameInput = styled.input`
-  color: white;
+  color: ${({ typeOfMap }) => (typeOfMap === "desktop" ? "white" : "black")};
+
   height: auto;
   font-size: 1.4rem;
   border: none;
   background-color: transparent;
-  width: 9rem;
+  width: 10rem;
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
