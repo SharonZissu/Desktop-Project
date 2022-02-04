@@ -1,31 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import OpenedTask from "./OpenedTask";
-import moment from "moment";
 //styles
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindows } from "@fortawesome/free-brands-svg-icons";
+import { getCurrentTime } from "../utills.js";
 
-const TaskBar = ({ taskBarArr, openApp }) => {
+const TaskBar = ({ taskBarArr, manipulateApp }) => {
   const [hover, setHover] = useState(false);
-  const date = new Date(moment().format());
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  minutes = minutes < 10 ? `0${minutes}` : minutes;
-  hours = hours < 10 ? `0${hours}` : hours;
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const day = date.toString().split(" ")[2];
+  const [time, setTime] = useState("");
+  const [date, setDate] = useState("");
+  const { hours, minutes, day, month, year } = getCurrentTime();
 
+  useEffect(() => {
+    setInterval(() => {
+      const { hours, minutes, day, month, year } = getCurrentTime();
+      setTime(`${hours}:${minutes}`);
+      setDate(`${day}/${month}/${year}`);
+    }, 60000);
+  }, []);
   return (
     <Container>
       <TimeContainer>
-        <Time>
-          {hours}:{minutes}
-        </Time>
-        <DateContent>
-          {day}/{month + 1}/{year}
-        </DateContent>
+        <Time>{time ? time : `${hours}:${minutes}`}</Time>
+        <DateContent>{date ? date : `${day}/${month}/${year}`}</DateContent>
       </TimeContainer>
       <OpenedTasks>
         {taskBarArr.map(({ id, type, name, open, minimized }, i) => (
@@ -36,7 +34,7 @@ const TaskBar = ({ taskBarArr, openApp }) => {
             name={name}
             open={open}
             minimized={minimized}
-            openFunc={() => openApp(id)}
+            openFunc={() => manipulateApp("open", id)}
           />
         ))}
       </OpenedTasks>

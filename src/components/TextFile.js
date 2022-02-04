@@ -5,9 +5,10 @@ import ClearIcon from "@material-ui/icons/Clear";
 
 const TextFile = ({
   id,
-  minimizeApp,
-  sizingApp,
-  closeApp,
+  // minimizeApp,
+  // sizingApp,
+  // closeApp,
+  manipulateApp,
   open,
   minimized,
   sizing,
@@ -35,9 +36,7 @@ const TextFile = ({
     >
       <NavigateBar
         id={id}
-        minimizeApp={minimizeApp}
-        sizingApp={sizingApp}
-        closeApp={closeApp}
+        manipulateApp={manipulateApp}
         type="text"
         name={appName}
         saved={saved}

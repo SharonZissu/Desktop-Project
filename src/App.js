@@ -20,48 +20,17 @@ import backgroundImg1 from "./images/background1.jpg";
 import backgroundImg2 from "./images/background2.jpg";
 import backgroundImg3 from "./images/background3.jpg";
 
+import {
+  INITIAL_APPLICATIONS,
+  INITIAL_CMD,
+  NEW_FOLDER,
+  NEW_TEXTFILE,
+} from "./utills";
+
 function App() {
   const [taskBarArr, setTaskBarArr] = useState([]);
-  const [applicationsArr, setApplicationArr] = useState([
-    {
-      id: uuid_v4(),
-      type: "cmd",
-      name: "שורת הפקודה",
-      open: false,
-      minimized: false,
-      sizing: false,
-    },
-    {
-      id: uuid_v4(),
-      type: "text",
-      instructions: true,
-      name: "הוראות",
-      open: false,
-      minimized: false,
-      sizing: false,
-      text: "",
-      saved: true,
-      openSaveModal: false,
-    },
-    {
-      id: uuid_v4(),
-      type: "game",
-      instructions: true,
-      name: "כמה מהירים אתם 2",
-      open: false,
-      minimized: false,
-      sizing: false,
-      saved: true,
-      openSaveModal: false,
-    },
-  ]);
-  const [cmdArr, setCmdArr] = useState([
-    {
-      id: uuid_v4(),
-      location: "\\Desktop",
-      input: "",
-    },
-  ]);
+  const [applicationsArr, setApplicationArr] = useState(INITIAL_APPLICATIONS);
+  const [cmdArr, setCmdArr] = useState(INITIAL_CMD);
   const [cmdSavedCommands, setCmdSavedCommands] = useState({
     commands: [],
     count: 0,
@@ -81,11 +50,11 @@ function App() {
   //open battery low when dekstop screen is on
   useEffect(() => {
     let batteryTimeOut;
-    if (startDesktop && !startDesktop) {
+    if (startDesktop) {
       setTimeout(() => {
         batteryTimeOut = setBatteryLow(true);
         console.log("Battery low");
-      }, 3000);
+      }, 60000);
     }
     return () => {
       clearTimeout(batteryTimeOut);
@@ -104,7 +73,10 @@ function App() {
         app.id !== lastAppName.id
     );
 
+    console.log({ findAppsWithSameType });
+
     if (findAppsWithSameType) {
+      console.log("in iffff");
       if (findAppsWithSameType.name.indexOf("(") === 0) {
         const newStr = findAppsWithSameType.name.slice(3);
 
@@ -133,21 +105,15 @@ function App() {
     }, 5000);
   };
 
-  ////////CHANGE BACKGROUND
+  ////////CHANGE BACKGROUND////////
   //opening the "change background" modal
-  const handleOpenChangeBG = () => {
-    setOpenBgIsClicked(true);
-  };
+  const handleOpenChangeBG = () => setOpenBgIsClicked(true);
 
   //closing the "change background" modal
-  const closeChangeBg = () => {
-    setOpenBgIsClicked(false);
-  };
+  const closeChangeBg = () => setOpenBgIsClicked(false);
 
   //execute when picking background in the "change background" modal
-  const handlePickBG = (chose) => {
-    setChosenBG(chose);
-  };
+  const handlePickBG = (chose) => setChosenBG(chose);
 
   //helper function to find an application in the desktop
   const findObj = (id) => {
@@ -156,15 +122,6 @@ function App() {
       copyApplicationArr,
       copyApplicationArr.find((app) => app.id === id),
     ];
-  };
-
-  //execute when clicking an application in the desktop
-  const openApp = (id) => {
-    const [copyApplicationArr, appObj] = findObj(id);
-    appObj.open = true;
-    appObj.minimized = false;
-    setApplicationArr(copyApplicationArr);
-    setLastAppClicked(appObj);
   };
 
   //if more than 1 applications are open, and we click on the body of app that behind another
@@ -177,47 +134,55 @@ function App() {
 
   //execute when we close application, we remove the application from the task bar in the bottom
   const deleteObjFromTaskBar = (id) => {
-    const [copyApplicationArr, appObj] = findObj(id);
-    appObj.sizing = false;
-    setApplicationArr(copyApplicationArr);
     const filteredTaskArr = taskBarArr.filter((task) => task.id !== id);
     setTaskBarArr(filteredTaskArr);
   };
 
-  ////CLOSE / MINIMIZE / SIZING
-  //execute when clicking on "x" button on the navigate bar
-  //closing an opened application and remove it from task bar if needed
-  const closeApp = (id) => {
+  ////OPEN / CLOSE / MINIMIZE / SIZING
+  //- when clicking an application in the desktop
+  //- when clicking on "x" button on the navigate bar closing an opened application and remove it from task bar if needed
+  //- when clicking on "-" button on the navigate bar ,minimized an opened application and add it to task bar
+  //- when clicking on "ם" button on the navigate bar ,increase/decrease an opened application
+  const manipulateApp = (action, id) => {
     const [copyApplicationArr, appObj] = findObj(id);
-    if (!appObj.saved && appObj.type === "text") {
-      appObj.openSaveModal = true;
-      setApplicationArr(copyApplicationArr);
-    } else {
-      appObj.open = false;
-      setApplicationArr(copyApplicationArr);
-      deleteObjFromTaskBar(id);
+    console.log("id", id);
+    console.log("action", action);
+    console.log({ appObj });
+    switch (action) {
+      case "open":
+        appObj.open = true;
+        appObj.minimized = false;
+        console.log({ copyApplicationArr });
+        setApplicationArr(copyApplicationArr);
+        setLastAppClicked(appObj);
+        break;
+      case "close":
+        if (!appObj.saved && appObj.type === "text") {
+          appObj.openSaveModal = true;
+        } else {
+          console.log("closingggggg");
+          appObj.open = false;
+          appObj.sizing = false;
+          deleteObjFromTaskBar(id);
+        }
+        setApplicationArr(copyApplicationArr);
+        break;
+      case "minimize":
+        appObj.minimized = true;
+        setApplicationArr(copyApplicationArr);
+        const taskObj = taskBarArr.find((task) => task.id === id);
+        if (!taskObj) {
+          console.log(appObj);
+          setTaskBarArr([...taskBarArr, appObj]);
+        }
+        break;
+      case "sizing":
+        appObj.sizing = !appObj.sizing;
+        setApplicationArr(copyApplicationArr);
+        break;
+      default:
+        return null;
     }
-  };
-
-  //execute when clicking on "-" button on the navigate bar
-  // minimized an opened application and add it to task bar
-  const minimizeApp = (id) => {
-    const [copyApplicationArr, appObj] = findObj(id);
-    appObj.minimized = true;
-    setApplicationArr(copyApplicationArr);
-    const taskObj = taskBarArr.find((task) => task.id === id);
-    if (!taskObj) {
-      console.log(appObj);
-      setTaskBarArr([...taskBarArr, appObj]);
-    }
-  };
-
-  //execute when clicking on "ם" button on the navigate bar
-  // increase/decrease an opened application
-  const sizingApp = (id) => {
-    const [copyApplicationArr, appObj] = findObj(id);
-    appObj.sizing = !appObj.sizing;
-    setApplicationArr(copyApplicationArr);
   };
 
   //OPTIONS BAR
@@ -226,30 +191,18 @@ function App() {
   const openOptionsBar = (e) => {
     e.preventDefault();
     if (!batteryLow) {
-      console.log(e);
-      console.log("e.screenY", e.screenY);
-      console.log("e.screenx", e.screenX);
       if (e.target instanceof HTMLDivElement) {
-        console.log(e);
-        console.log(e.target.accessKey);
         if (e.target.accessKey) {
-          console.log("SUDSFSDKJFHSDKFJHSDFKHSDF");
-          console.log(e.target.accessKey);
           setFolderWantsToAddId(e.target.accessKey);
         }
-
         if (e.screenY > 550) {
-          console.log("e.screenY > 550");
           setPageX(e.pageX - 30);
           setPageY(e.pageY - 240);
         } else {
-          console.log("ELSE");
-
           setPageX(e.pageX - 30);
           setPageY(e.pageY - 40);
         }
       } else {
-        console.log("CLOSECLOSE");
         closeOptionBar();
       }
     }
@@ -263,45 +216,23 @@ function App() {
   };
 
   const createFolderInFolder = (folderId) => {
-    console.log("folderId", folderId);
     const [copyApplicationArr, appObj] = findObj(folderId);
-    console.log("appObj", appObj);
-
     const applicationObj = {
+      ...NEW_FOLDER,
       id: uuid_v4(),
-      name: "תיקייה חדשה",
-      type: "folder",
-      open: false,
-      minimized: false,
-      sizing: false,
-      appsInFolder: [],
       parentFolderId: appObj.id,
     };
-    console.log("appObj.appsInFolder", appObj.appsInFolder);
-
     appObj.appsInFolder.push(applicationObj);
     setApplicationArr([...copyApplicationArr, applicationObj]);
     setFolderWantsToAddId(null);
   };
   const createTextFileInFolder = (folderId) => {
-    console.log("folderId", folderId);
     const [copyApplicationArr, appObj] = findObj(folderId);
-    console.log("appObj", appObj);
-
     const applicationObj = {
+      ...NEW_TEXTFILE,
       id: uuid_v4(),
-      name: "מסמך טקסט",
-      type: "text",
-      open: false,
-      minimized: false,
-      sizing: false,
-      text: "",
-      saved: true,
-      openSaveModal: false,
       parentFolderId: appObj.id,
     };
-    console.log("appObj.appsInFolder", appObj.appsInFolder);
-
     appObj.appsInFolder.push(applicationObj);
     setApplicationArr([...copyApplicationArr, applicationObj]);
     setFolderWantsToAddId(null);
@@ -312,15 +243,13 @@ function App() {
     let newName;
     if (typeof name === "object") newName = "תיקייה חדשה";
     else newName = name;
+
     const applicationObj = {
+      ...NEW_FOLDER,
       id: uuid_v4(),
       name: newName,
-      type: "folder",
-      open: false,
-      minimized: false,
-      sizing: false,
-      appsInFolder: [],
     };
+
     setApplicationArr((prevState) => [...prevState, applicationObj]);
   };
 
@@ -330,20 +259,11 @@ function App() {
     if (typeof name === "object") newName = "מסמך טקסט";
     else newName = name;
     const applicationObj = {
+      ...NEW_TEXTFILE,
       id: uuid_v4(),
       name: newName,
-      type: "text",
-      open: false,
-      minimized: false,
-      sizing: false,
-      text: "",
-      saved: true,
-      openSaveModal: false,
     };
-
-    console.log(applicationObj);
     setApplicationArr((prevState) => [...prevState, applicationObj]);
-    // setApplicationArr([...applicationsArr, applicationObj]);
   };
 
   //APPLICATION NAME
@@ -367,13 +287,7 @@ function App() {
   //CMD functionallity
   //execute when we command 'cls' or when closing the CMD
   const clearCMD = () => {
-    setCmdArr([
-      {
-        id: uuid_v4(),
-        location: "\\Desktop",
-        input: "",
-      },
-    ]);
+    setCmdArr(INITIAL_CMD);
     setCmdSavedCommands({
       commands: [],
       count: 0,
@@ -403,7 +317,6 @@ function App() {
       const arr = command.split(" ");
       arr.shift();
       if (arr.length > 1) {
-        console.log("RETURNNNNN");
         return;
       }
       if (arr[0] === "..") {
@@ -449,7 +362,6 @@ function App() {
           location: cmdArr[cmdArr.length - 1].location,
           input: "",
         });
-        console.log(copyCmdArr);
         setCmdArr(copyCmdArr);
         return;
       }
@@ -467,9 +379,6 @@ function App() {
       arr.shift();
       arr = arr.join(" ");
       arr = arr.trim().split(" ");
-      // console.log(typeof command);
-      // console.log(command.trim());
-      console.log(arr);
       if (arr.join("") === "") {
         console.log("YESSSSSSSSSSSSS");
         copyCmdArr[copyCmdArr.length - 1].input = command;
@@ -500,7 +409,6 @@ function App() {
         location: cmdArr[cmdArr.length - 1].location,
         input: "",
       });
-      console.log(copyCmdArr);
       setCmdArr(copyCmdArr);
       return;
     }
@@ -515,15 +423,10 @@ function App() {
   };
 
   const handleTextFileChanged = (e, id) => {
-    console.log(id);
-    console.log(e.target.value);
     const [copyApplicationArr, appObj] = findObj(id);
     if (appObj.text !== e.target.value) {
-      console.log(appObj.text + "||!==||" + e.target.value);
       appObj.saved = false;
     } else {
-      console.log(appObj.text + "||===||" + e.target.value);
-
       appObj.saved = true;
     }
     setApplicationArr(copyApplicationArr);
@@ -531,7 +434,6 @@ function App() {
 
   //for the functionallity of the "up arrow" and "down arrow" on keyboard to see previos commands
   const setCountMinus1 = () => {
-    console.log(cmdSavedCommands);
     setCmdSavedCommands({
       ...cmdSavedCommands,
       count: cmdSavedCommands.count - 1,
@@ -611,59 +513,21 @@ function App() {
 
         <Applications
           applicationsArr={applicationsArr}
-          openApp={openApp}
+          manipulateApp={manipulateApp}
           changeApplicationName={changeApplicationName}
           handleAppNameInputChange={handleAppNameInputChange}
           typeOfMap="desktop"
         />
-        {/* <TextFile
-          id={checkInstructionsFileId()}
-          minimizeApp={minimizeApp}
-          sizingApp={sizingApp}
-          closeApp={closeApp}
-          open={checkIfInstructionClicked()}
-          minimized={checkIfInstructionMinimized()}
-          sizing={checkIfInstructionSizing()}
-          appName="הוראות הפעלה"
-          lastAppClicked={lastAppClicked}
-          handleApplicationClickedLast={handleApplicationClickedLast}
-        />
-        <CMD
-          // open={checkIfCMDClicked()}
-          id={checkCMDId()}
-          open={checkIfCMDClicked()}
-          minimized={checkIfCMDMinimized()}
-          sizing={checkIfCMDSizing()}
-
-          closeApp={closeApp}
-          minimizeApp={minimizeApp}
-          sizingApp={sizingApp}
-          clearCMD={clearCMD}
-          cmdArr={cmdArr}
-          sendCommand={sendCommand}
-          cmdSavedCommands={cmdSavedCommands}
-          setCountMinus1={setCountMinus1}
-          setCountPlus1={setCountPlus1}
-          lastAppClicked={lastAppClicked}
-          handleApplicationClickedLast={handleApplicationClickedLast}
-        /> */}
 
         {applicationsArr.map((app) => {
+          const { key, ...other } = app;
+
           if (app.type === "text") {
             return (
               <TextFile
-                key={app.id}
-                id={app.id}
-                minimizeApp={minimizeApp}
-                sizingApp={sizingApp}
-                closeApp={closeApp}
-                open={app.open}
-                minimized={app.minimized}
-                sizing={app.sizing}
-                text={app.text}
-                saved={app.saved}
-                appName={app.name}
-                openSaveModal={app.openSaveModal}
+                key={key}
+                {...other}
+                manipulateApp={manipulateApp}
                 lastAppClicked={lastAppClicked}
                 handleApplicationClickedLast={handleApplicationClickedLast}
                 saveTextFileWithAltS={saveTextFileWithAltS}
@@ -676,16 +540,10 @@ function App() {
           } else if (app.type === "cmd") {
             return (
               <CMD
-                // open={checkIfCMDClicked()}
-                key={app.id}
-                id={app.id}
-                open={app.open}
-                minimized={app.minimized}
-                sizing={app.sizing}
-                closeApp={closeApp}
-                minimizeApp={minimizeApp}
-                sizingApp={sizingApp}
+                key={key}
+                {...other}
                 clearCMD={clearCMD}
+                manipulateApp={manipulateApp}
                 cmdArr={cmdArr}
                 sendCommand={sendCommand}
                 cmdSavedCommands={cmdSavedCommands}
@@ -698,18 +556,9 @@ function App() {
           } else if (app.type === "folder") {
             return (
               <Folder
-                key={app.id}
-                id={app.id}
-                minimizeApp={minimizeApp}
-                sizingApp={sizingApp}
-                closeApp={closeApp}
-                open={app.open}
-                minimized={app.minimized}
-                sizing={app.sizing}
-                saved={app.saved}
-                appName={app.name}
-                appsInFolder={app.appsInFolder}
-                parentFolderId={app.parentFolderId}
+                key={key}
+                {...other}
+                manipulateApp={manipulateApp}
                 lastAppClicked={lastAppClicked}
                 handleApplicationClickedLast={handleApplicationClickedLast}
                 saveTextFileWithAltS={saveTextFileWithAltS}
@@ -717,7 +566,6 @@ function App() {
                 handleTextFileChanged={handleTextFileChanged}
                 unSaveTextFile={unSaveTextFile}
                 CancelTextFileModal={CancelTextFileModal}
-                openApp={openApp}
                 changeApplicationName={changeApplicationName}
                 handleAppNameInputChange={handleAppNameInputChange}
               />
@@ -725,50 +573,14 @@ function App() {
           } else if (app.type === "game") {
             return (
               <HowFastAreU2
-                key={app.id}
-                id={app.id}
-                open={app.open}
-                minimized={app.minimized}
-                sizing={app.sizing}
-                closeApp={closeApp}
-                minimizeApp={minimizeApp}
-                sizingApp={sizingApp}
+                key={key}
+                {...other}
+                manipulateApp={manipulateApp}
                 handleApplicationClickedLast={handleApplicationClickedLast}
               />
             );
           }
         })}
-
-        {/* {applicationsArr.map((app) => {
-          if (app.open && app.type !== "cmd" && !app.instructions) {
-            if (app.type === "text") {
-              console.log("YES");
-              return (
-                <TextFile
-                  key={app.id}
-                  id={app.id}
-                  minimizeApp={minimizeApp}
-                  sizingApp={sizingApp}
-                  closeApp={closeApp}
-                  open={app.open}
-                  minimized={app.minimized}
-                  sizing={app.sizing}
-                  text={app.text}
-                  saved={app.saved}
-                  appName={app.name}
-                  openSaveModal={app.openSaveModal}
-                  lastAppClicked={lastAppClicked}
-                  handleApplicationClickedLast={handleApplicationClickedLast}
-                  saveTextFileWithAltS={saveTextFileWithAltS}
-                  saveTextFileWithBtn={saveTextFileWithBtn}
-                  handleTextFileChanged={handleTextFileChanged}
-                  unSaveTextFile={unSaveTextFile}
-                  CancelTextFileModal={CancelTextFileModal}
-                />
-              );
-            }
-          }
-        })} */}
 
         <ChangeBackground
           handlePickBG={handlePickBG}
@@ -777,7 +589,7 @@ function App() {
           closeChangeBg={closeChangeBg}
         />
 
-        <TaskBar taskBarArr={taskBarArr} openApp={openApp} />
+        <TaskBar taskBarArr={taskBarArr} manipulateApp={manipulateApp} />
         <OptionsBar
           pageX={pageX}
           pageY={pageY}

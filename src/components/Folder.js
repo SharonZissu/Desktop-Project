@@ -6,9 +6,7 @@ import Applications from "./Applications";
 
 const Folder = ({
   id,
-  minimizeApp,
-  sizingApp,
-  closeApp,
+  manipulateApp,
   open,
   minimized,
   sizing,
@@ -37,9 +35,7 @@ const Folder = ({
     >
       <NavigateBar
         id={id}
-        minimizeApp={minimizeApp}
-        sizingApp={sizingApp}
-        closeApp={closeApp}
+        manipulateApp={manipulateApp}
         type="folder"
         name={appName}
         saved={saved}
@@ -47,10 +43,11 @@ const Folder = ({
       <FolderContainer accessKey={id}>
         <Applications
           applicationsArr={appsInFolder}
-          openApp={openApp}
+          manipulateApp={manipulateApp}
           changeApplicationName={changeApplicationName}
           handleAppNameInputChange={handleAppNameInputChange}
           typeOfMap="folderInFolder"
+          folderId={id}
         />
         {/* if(app.type === 'folder') { 
           //   return (
@@ -163,6 +160,7 @@ const FolderContainer = styled.div`
   border: none;
   border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
   padding: 2rem;
+
   &:focus {
     outline: none;
   }

@@ -4,25 +4,17 @@ import ClearIcon from "@material-ui/icons/Clear";
 import RemoveIcon from "@material-ui/icons/Remove";
 import CropSquareSharpIcon from "@material-ui/icons/CropSquareSharp";
 
-const NavigateBar = ({
-  id,
-  minimizeApp,
-  sizingApp,
-  closeApp,
-  type,
-  name,
-  saved,
-}) => {
+const NavigateBar = ({ id, manipulateApp, type, name, saved }) => {
   return (
     <Navigate>
       <NavigateBtns>
-        <GreyHoverBtn onClick={() => minimizeApp(id)}>
+        <GreyHoverBtn onClick={() => manipulateApp("minimize", id)}>
           <RemoveIcon fontSize="large" />
         </GreyHoverBtn>
-        <GreyHoverBtn onClick={() => sizingApp(id)}>
+        <GreyHoverBtn onClick={() => manipulateApp("sizing", id)}>
           <CropSquareSharpIcon fontSize="large" />
         </GreyHoverBtn>
-        <CloseBtn onClick={() => closeApp(id)}>
+        <CloseBtn onClick={() => manipulateApp("close", id)}>
           <ClearIcon fontSize="large" />
         </CloseBtn>
       </NavigateBtns>

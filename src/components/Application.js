@@ -6,7 +6,7 @@ const Application = ({
   id,
   type,
   name,
-  openApp,
+  manipulateApp,
   parentFolderId,
   changeApplicationName,
   instructions,
@@ -73,7 +73,7 @@ const Application = ({
         <ApplicationContainer>
           <ApplicationImg
             src={require(`../images/${type}.png`).default}
-            onDoubleClick={() => openApp(id)}
+            onDoubleClick={() => manipulateApp("open", id)}
           />
           {(type === "cmd" || instructions || type === "game") && (
             <ApplicationName typeOfMap={typeOfMap} dir="rtl">

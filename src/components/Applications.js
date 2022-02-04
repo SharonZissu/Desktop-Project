@@ -4,10 +4,11 @@ import styled, { css } from "styled-components";
 import Application from "./Application";
 const Applications = ({
   applicationsArr,
-  openApp,
+  manipulateApp,
   changeApplicationName,
   handleAppNameInputChange,
   typeOfMap,
+  folderId,
 }) => {
   return (
     <Container typeOfMap={typeOfMap}>
@@ -22,7 +23,7 @@ const Applications = ({
             type={app.type}
             name={app.name}
             parentFolderId={app.parentFolderId}
-            openApp={openApp}
+            manipulateApp={manipulateApp}
             changeApplicationName={changeApplicationName}
             instructions={app.instructions}
             typeOfMap={typeOfMap}
@@ -38,7 +39,6 @@ export default Applications;
 const Container = styled.div`
   /* background-color: red; */
   /* width: 100%; */
-
   height: 100%;
   margin-top: ${({ typeOfMap }) => (typeOfMap === "desktop" ? "0" : "3rem")};
   max-height: 100%;

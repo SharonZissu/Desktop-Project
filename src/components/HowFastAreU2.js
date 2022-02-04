@@ -30,9 +30,7 @@ const HowFastAreU2 = ({
   open,
   minimized,
   sizing,
-  minimizeApp,
-  sizingApp,
-  closeApp,
+  manipulateApp,
   handleApplicationClickedLast,
 }) => {
   const [keyState, setKeyState] = useState("");
@@ -86,6 +84,7 @@ const HowFastAreU2 = ({
       e.preventDefault();
 
       const { key, code } = e;
+      console.log("key", key);
       let keyPress;
       if (key === "CapsLock") keyPress = "Caps Lock";
       else if (key === "Backspace") keyPress = "Delete";
@@ -134,9 +133,7 @@ const HowFastAreU2 = ({
     >
       <NavigateBar
         id={id}
-        minimizeApp={minimizeApp}
-        sizingApp={sizingApp}
-        closeApp={closeApp}
+        manipulateApp={manipulateApp}
         type="game"
         name="2 כמה מהירים אתם"
       />
@@ -145,7 +142,7 @@ const HowFastAreU2 = ({
           <img
             src={require("../images/keyboardIcon.png").default}
             style={{
-              height: sizing ? "20rem" : "18rem",
+              height: sizing ? "100%" : "100%",
               width: sizing ? "170%" : "150%",
             }}
           />
@@ -266,12 +263,13 @@ const GameContent = styled.div`
   display: flex;
   justify-content: space-around;
   width: 70%;
+  height: 100%;
   overflow: hidden;
 `;
 
 const IconContainer = styled.div`
   position: absolute;
-
+  height: 100%;
   left: ${({ sizing }) => (sizing ? "-8.5rem" : "-6.5rem")};
   opacity: 0.075;
 `;
@@ -282,7 +280,7 @@ const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   z-index: 3;
 `;
 const Title = styled.label`

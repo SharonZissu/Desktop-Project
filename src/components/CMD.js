@@ -9,9 +9,7 @@ const CMD = ({
   open,
   minimized,
   sizing,
-  closeApp,
-  minimizeApp,
-  sizingApp,
+  manipulateApp,
   clearCMD,
   cmdArr,
   sendCommand,
@@ -53,7 +51,7 @@ const CMD = ({
 
   const closeCmdHandler = () => {
     setIncreseCmd(false);
-    closeApp(id);
+    manipulateApp("close", id);
   };
 
   const toggleCrop = () => {
@@ -100,9 +98,7 @@ const CMD = ({
     >
       <NavigateBar
         id={id}
-        minimizeApp={minimizeApp}
-        sizingApp={sizingApp}
-        closeApp={closeApp}
+        manipulateApp={manipulateApp}
         type="cmd"
         name="שורת הפקודה"
       />
